@@ -9,10 +9,20 @@ function App() {
   const theme = useMemo(
     () =>
       createMuiTheme({
+        props: {
+          MuiButtonBase: {
+            disableRipple: true,
+          },
+        },
         palette: {
           type: prefersDarkMode ? "dark" : "light",
           primary: {
+            light: "#74cafe",
             main: "#1da1f2",
+          },
+          background: {
+            paper: "#1e2e3e",
+            default: "#15202b",
           },
         },
       }),

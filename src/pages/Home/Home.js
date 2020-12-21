@@ -160,7 +160,7 @@ const Home = () => {
                 color="primary"
                 disableElevation
                 fullWidth
-                href="/register"
+                href="/i/flow/signup"
               >
                 Sign Up
               </MyButton>
@@ -226,7 +226,7 @@ const Home = () => {
                 color="primary"
                 disableElevation
                 fullWidth
-                href="/register"
+                href="/i/flow/signup"
               >
                 Sign Up
               </MyButton>

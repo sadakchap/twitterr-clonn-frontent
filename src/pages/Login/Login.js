@@ -1,12 +1,15 @@
+import { gql, useMutation } from "@apollo/client";
 import {
   Button,
+  CircularProgress,
   Container,
   makeStyles,
   TextField,
   Typography,
 } from "@material-ui/core";
 import TwitterIcon from "@material-ui/icons/Twitter";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,34 +40,65 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = () => {
+const Login = (props) => {
   const classes = useStyles();
-
+  const { login } = useContext(AuthContext);
   const [values, setValues] = useState({
     username: "",
     password: "",
+    error: "",
   });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("submitting form");
-  };
 
   const handleChange = (name) => (e) =>
     setValues({ ...values, [name]: e.target.value });
 
-  const { username, password } = values;
+  // login is QUERY not a Mutation
+  const [loginUser, { loading }] = useMutation(LOGIN_USER_QUERY, {
+    update(_, result) {
+      console.log(result.data.login);
+      login(result.data.login);
+      setValues({
+        ...values,
+        username: "",
+        password: "",
+      });
+      props.history.push("/");
+    },
+    onError(err) {
+      // console.log(err.graphQLErrors[0].extensions.exception.errors);
+      setValues({
+        ...values,
+        error:
+          "The email and password you entered did not match our records. Please double-check and try again.",
+      });
+    },
+    variables: values,
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!username || !password) {
+      console.log("Errors");
+      return;
+    }
+    loginUser();
+  };
+
+  const { username, password, error } = values;
 
   return (
     <Container className={classes.root}>
       <div className={classes.formWrapper}>
         <div className={classes.formHeader}>
           <TwitterIcon style={{ fontSize: "2.5rem", marginBottom: "16px" }} />
-          <Typography variant="h6" component="h6" fontWeight={700}>
+          <Typography variant="h6" component="h6" fontWeight={700} gutterBottom>
             Log in to Twitter
           </Typography>
         </div>
         <form autoComplete="off" onSubmit={handleSubmit}>
+          <Typography variant="caption" component="div" color="secondary">
+            {error}
+          </Typography>
           <TextField
             id="username"
             label="Phone, email or username"
@@ -97,7 +131,11 @@ const Login = () => {
             className={classes.formBtn}
             disabled={!username || !password}
           >
-            Login
+            {loading ? (
+              <CircularProgress style={{ color: "#fff" }} size={25} />
+            ) : (
+              "Login"
+            )}
           </Button>
         </form>
       </div>
@@ -106,3 +144,13 @@ const Login = () => {
 };
 
 export default Login;
+
+const LOGIN_USER_QUERY = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      id
+      username
+      token
+    }
+  }
+`;

@@ -2,7 +2,7 @@ import { Backdrop, makeStyles } from "@material-ui/core";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import { useState } from "react";
 import MyButton from "../../components/MyButton/MyButton";
-import { getNumberOfDays } from "../../utils/utils";
+import { getNumberOfDays, validateEmail } from "../../utils/utils";
 import SignForm from "./SignForm";
 
 const useStyles = makeStyles((theme) => ({
@@ -45,12 +45,23 @@ const Register = () => {
     code: "",
     numberOfDays: 31,
   });
+  const [errors, setErrors] = useState({});
 
   const nextStep = () => setValues({ ...values, step: step + 1 });
   const prevStep = () => setValues({ ...values, step: step - 1 });
 
   const handleChange = (name) => (e) => {
-    setValues({ ...values, [name]: e.target.value });
+    const updatedValue = e.target.value.trim();
+    setValues({ ...values, [name]: updatedValue });
+
+    let errorMsg = "";
+    if (name === "name" && updatedValue === "") {
+      errorMsg = "whats your name?";
+    }
+    if (name === "email" && !validateEmail(updatedValue)) {
+      errorMsg = "Please enter a valid address";
+    }
+    setErrors({ ...errors, [name]: errorMsg });
   };
 
   const handleMonthOrYearChange = (name) => (e) => {
@@ -77,6 +88,7 @@ const Register = () => {
             values={values}
             handleChange={handleChange}
             handleMonthOrYearChange={handleMonthOrYearChange}
+            errors={errors}
           />
         );
       case 2:
@@ -118,7 +130,6 @@ const Register = () => {
                   variant="contained"
                   size="small"
                   color="primary"
-                  // disabled
                   onClick={nextStep}
                 >
                   Next

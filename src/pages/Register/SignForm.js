@@ -73,6 +73,7 @@ const SignForm = (props) => {
     values: { name, email, month, day, year, numberOfDays },
     handleChange,
     handleMonthOrYearChange,
+    errors,
   } = props;
 
   return (
@@ -98,6 +99,8 @@ const SignForm = (props) => {
         variant="outlined"
         value={name}
         onChange={handleChange("name")}
+        error={!!errors.name}
+        helperText={errors.name}
       />
       <br />
       <TextField
@@ -112,6 +115,8 @@ const SignForm = (props) => {
         variant="outlined"
         value={email}
         onChange={handleChange("email")}
+        error={!!errors.email}
+        helperText={errors.email}
       />
       <Typography style={{ marginTop: "16px" }}>
         <Link href="#" onClick={preventDefault} variant="caption">

@@ -11,7 +11,7 @@ export function getNumberOfDays(month, year) {
   if (year && month) {
     return new Date(year, month, 0).getDate();
   }
-  numberOfDays = month % 2 === 0 ? 30 : 31;
+  numberOfDays = month % 2 === 0 ? 31 : 30;
   if (month === 2) {
     numberOfDays = 28;
   }

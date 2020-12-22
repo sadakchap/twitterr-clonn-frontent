@@ -4,6 +4,7 @@ import {
   CircularProgress,
   Container,
   makeStyles,
+  Snackbar,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -15,12 +16,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     justifyContent: "center",
+    minHeight: "100vh",
   },
   formWrapper: {
     marginTop: `${theme.spacing(2)}px`,
     maxWidth: 600,
   },
-  form: {},
   formHeader: {
     width: "100%",
     textAlign: "center",
@@ -38,6 +39,11 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 700,
     },
   },
+  snackBar: {
+    backgroundColor: theme.palette.primary.main,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    borderRadius: `${theme.shape.borderRadius}px`,
+  },
 }));
 
 const Login = (props) => {
@@ -48,14 +54,13 @@ const Login = (props) => {
     password: "",
     error: "",
   });
+  const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const handleChange = (name) => (e) =>
     setValues({ ...values, [name]: e.target.value });
 
-  // login is QUERY not a Mutation
   const [loginUser, { loading }] = useMutation(LOGIN_USER_QUERY, {
     update(_, result) {
-      console.log(result.data.login);
       login(result.data.login);
       setValues({
         ...values,
@@ -71,6 +76,7 @@ const Login = (props) => {
         error:
           "The email and password you entered did not match our records. Please double-check and try again.",
       });
+      setOpenSnackBar(true);
     },
     variables: values,
   });
@@ -139,6 +145,20 @@ const Login = (props) => {
           </Button>
         </form>
       </div>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={openSnackBar}
+        onClose={() => setOpenSnackBar(false)}
+        autoHideDuration={5000}
+      >
+        <Typography
+          variant="caption"
+          component="div"
+          className={classes.snackBar}
+        >
+          {error}
+        </Typography>
+      </Snackbar>
     </Container>
   );
 };

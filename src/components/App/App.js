@@ -3,6 +3,7 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline, useMediaQuery } from "@material-ui/core";
 import { useMemo } from "react";
 import Routes from "../Routes/Routes";
+import AuthContextProvider from "../../contexts/auth";
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -32,7 +33,9 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Routes />
+      <AuthContextProvider>
+        <Routes />
+      </AuthContextProvider>
     </ThemeProvider>
   );
 }

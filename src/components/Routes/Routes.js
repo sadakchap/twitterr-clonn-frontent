@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from "../../pages/Home/Home";
 import Login from "../../pages/Login/Login";
 import Register from "../../pages/Register/Register";
+import Feed from "../../ProtectedPages/Feed/Feed";
 
 const Routes = () => {
   return (
@@ -10,6 +11,7 @@ const Routes = () => {
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/i/flow/signup" component={Register} />
+        <Route exact path="/home" component={Feed} />
       </Switch>
     </BrowserRouter>
   );

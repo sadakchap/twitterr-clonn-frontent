@@ -12,6 +12,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import PeopleIcon from "@material-ui/icons/People";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import TwitterIcon from "@material-ui/icons/Twitter";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -105,7 +108,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = () => {
   const classes = useStyles();
-  return (
+  const { user } = useContext(AuthContext);
+  return user ? (
+    <Redirect to="/home" />
+  ) : (
     <Box className={classes.root}>
       <Grid
         container

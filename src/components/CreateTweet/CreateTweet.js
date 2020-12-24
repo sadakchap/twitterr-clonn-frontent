@@ -36,8 +36,7 @@ const CreateTweet = () => {
   );
 
   const [createTweet, { loading }] = useMutation(CREATE_TWEET_MUTATION, {
-    update: (_, result) => {
-      console.log(result);
+    update: (_, __) => {
       setEditorState(EditorState.createEmpty());
     },
     variables: {
@@ -47,7 +46,10 @@ const CreateTweet = () => {
 
   const handleSubmitBtn = (e) => {
     e.preventDefault();
-    createTweet();
+
+    if (editorState.getCurrentContent().hasText()) {
+      createTweet();
+    }
   };
 
   return (
@@ -72,6 +74,7 @@ const CreateTweet = () => {
                 size="small"
                 type="submit"
                 onClick={handleSubmitBtn}
+                disabled={!editorState.getCurrentContent().hasText()}
               >
                 Tweet
               </MyButton>

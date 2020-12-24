@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
-    background: "transparent",
+    background: `${theme.palette.background.paper}`,
     boxShadow: "none",
     color: "#fff",
     border: `1px solid ${theme.palette.text.disabled}`,

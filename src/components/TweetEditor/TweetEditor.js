@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core";
 import { AuthContext } from "../../contexts/auth";
 import { filterUsers } from "../../utils/graphql";
 
-import { EditorState } from "draft-js";
 import Editor from "draft-js-plugins-editor";
 import createMentionPlugin from "draft-js-mention-plugin";
 import mentionsStyles from "./mentionStyle.module.css";
@@ -26,18 +25,15 @@ const useStyles = makeStyles((theme) => ({
     cursor: "text",
     padding: `${theme.spacing(2)}px`,
     borderRadius: `${theme.shape.borderRadius}px`,
-    marginBottom: "2em",
     minHeight: "80px",
   },
 }));
 
-const TweetEditor = () => {
+const TweetEditor = (props) => {
   const classes = useStyles();
   const { user } = useContext(AuthContext);
+  const { editorState, setEditorState } = props;
 
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
   const [suggestions, setSuggestions] = useState([]);
   const editor = useRef(null);
 

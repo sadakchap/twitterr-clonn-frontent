@@ -116,6 +116,7 @@ const Login = (props) => {
             }}
             value={username}
             onChange={handleChange("username")}
+            autoFocus
           />
           <TextField
             id="password"

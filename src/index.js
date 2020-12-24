@@ -2,6 +2,8 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import ApolloProvider from "./components/ApolloProvider";
+import "draft-js/dist/Draft.css";
+import "draft-js-mention-plugin/lib/plugin.css";
 
 ReactDOM.render(ApolloProvider, document.getElementById("root"));
 

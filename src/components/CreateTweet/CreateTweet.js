@@ -1,5 +1,6 @@
 import { makeStyles, Paper } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
+import TweetEditor from "../TweetEditor/TweetEditor";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +35,7 @@ const CreateTweet = () => {
         <Skeleton variant="circle" width={40} height={40} />
       </div>
       <div className={classes.tweetFormSection}>
-        <textArea></textArea>
+        <TweetEditor />
       </div>
     </Paper>
   );

@@ -1,27 +1,59 @@
 import {
   CardContent,
   Card,
-  Paper,
   makeStyles,
-  CardHeader,
-  IconButton,
   CardActions,
   Button,
+  Typography,
+  useTheme,
 } from "@material-ui/core";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Skeleton from "@material-ui/lab/Skeleton";
 import DisplayTweetMsg from "./DisplayTweetMsg";
+import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
+import LoopIcon from "@material-ui/icons/Loop";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import moment from "moment";
+
+moment.locale("en", {
+  relativeTime: {
+    future: "in %s",
+    past: "%s ago",
+    s: "a few seconds",
+    m: "a min",
+    mm: "%d mins",
+    h: "1h",
+    hh: "%dh",
+    d: "1d",
+    dd: "%dd",
+    M: "a month",
+    MM: "%d months",
+    y: "ayr",
+    yy: "%dyr",
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    border: `1px solid ${theme.palette.text.secondary}`,
     padding: `${theme.spacing(2)}px`,
     display: "flex",
-    // width: 345,
-  },
-  tweetCardWrapper: {
+    maxWidth: 600,
     width: "100%",
+  },
+  tweetProfilePic: {
+    width: 50,
+    paddingRight: "4px",
+  },
+  tweetCardHeader: {
+    padding: `${theme.spacing(1)}px 0 0`,
+  },
+  authorName: {
+    fontWeight: 700,
+    display: "inline-block",
+    marginRight: `4px`,
+  },
+  tweetBody: {
+    padding: `${theme.spacing(1)}px 0 0`,
   },
 }));
 
@@ -30,39 +62,43 @@ const Tweet = (props) => {
     tweet: { username, createdAt, body },
   } = props;
   const classes = useStyles();
+  const theme = useTheme();
   return (
-    <Paper className={classes.root}>
-      <div className={classes.profilePicSection}>
-        <Skeleton variant="circle" width={40} height={40} />
+    <Card variant="outlined" className={classes.root}>
+      <div className={classes.tweetProfilePic}>
+        <Skeleton variant="circle" width={45} height={45} />
       </div>
-      <div className={classes.tweetCardWrapper}>
-        <Card variant="outlined">
-          <CardHeader
-            title={username}
-            subheader={createdAt}
-            action={
-              <IconButton aria-label="settings">
-                <MoreVertIcon />
-              </IconButton>
-            }
-          />
-          <CardContent>
-            <DisplayTweetMsg body={body} />
-          </CardContent>
-          <CardActions>
-            <Button size="small" color="primary">
-              comment
-            </Button>
-            <Button size="small" color="primary">
-              ReTweet
-            </Button>
-            <Button size="small" color="primary">
-              Share
-            </Button>
-          </CardActions>
-        </Card>
+      <div className={classes.tweetContent}>
+        <div className={classes.tweetCardHeader}>
+          <span className={classes.authorName}>{username}</span>
+          <Typography variant="caption" component="span" color="textSecondary">
+            @{username} &#183; {moment(parseInt(createdAt)).fromNow(true)}
+          </Typography>
+        </div>
+        <CardContent className={classes.tweetBody}>
+          <DisplayTweetMsg body={body} />
+        </CardContent>
+        <CardActions style={{ color: `${theme.palette.text.hint}` }}>
+          <Button
+            size="small"
+            color="inherit"
+            startIcon={<ChatBubbleOutlineIcon />}
+          >
+            {515}
+          </Button>
+          <Button size="small" color="inherit" startIcon={<LoopIcon />}>
+            {1.3}K
+          </Button>
+          <Button
+            size="small"
+            color="inherit"
+            startIcon={<FavoriteBorderIcon />}
+          >
+            {7.5}K
+          </Button>
+        </CardActions>
       </div>
-    </Paper>
+    </Card>
   );
 };
 

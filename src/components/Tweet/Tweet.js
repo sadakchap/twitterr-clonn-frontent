@@ -2,18 +2,13 @@ import {
   CardContent,
   Card,
   makeStyles,
-  CardActions,
-  Button,
   Typography,
-  useTheme,
   Fade,
 } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
 import DisplayTweetMsg from "./DisplayTweetMsg";
-import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
-import LoopIcon from "@material-ui/icons/Loop";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import moment from "moment";
+import TweetActions from "./TweetActions";
 
 moment.locale("en", {
   relativeTime: {
@@ -63,7 +58,7 @@ const Tweet = (props) => {
     tweet: { username, createdAt, body, likesCount, commentsCount },
   } = props;
   const classes = useStyles();
-  const theme = useTheme();
+
   return (
     <Fade in={true} timeout={500}>
       <Card variant="outlined" className={classes.root}>
@@ -84,25 +79,7 @@ const Tweet = (props) => {
           <CardContent className={classes.tweetBody}>
             <DisplayTweetMsg body={body} />
           </CardContent>
-          <CardActions style={{ color: `${theme.palette.text.hint}` }}>
-            <Button
-              size="small"
-              color="inherit"
-              startIcon={<ChatBubbleOutlineIcon />}
-            >
-              {likesCount}
-            </Button>
-            <Button size="small" color="inherit" startIcon={<LoopIcon />}>
-              {1.3}K
-            </Button>
-            <Button
-              size="small"
-              color="inherit"
-              startIcon={<FavoriteBorderIcon />}
-            >
-              {commentsCount}
-            </Button>
-          </CardActions>
+          <TweetActions likesCount={likesCount} commentsCount={commentsCount} />
         </div>
       </Card>
     </Fade>

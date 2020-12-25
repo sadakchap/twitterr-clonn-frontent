@@ -6,6 +6,7 @@ import {
   Button,
   Typography,
   useTheme,
+  Fade,
 } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
 import DisplayTweetMsg from "./DisplayTweetMsg";
@@ -64,41 +65,47 @@ const Tweet = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   return (
-    <Card variant="outlined" className={classes.root}>
-      <div className={classes.tweetProfilePic}>
-        <Skeleton variant="circle" width={45} height={45} />
-      </div>
-      <div className={classes.tweetContent}>
-        <div className={classes.tweetCardHeader}>
-          <span className={classes.authorName}>{username}</span>
-          <Typography variant="caption" component="span" color="textSecondary">
-            @{username} &#183; {moment(parseInt(createdAt)).fromNow(true)}
-          </Typography>
+    <Fade in={true} timeout={500}>
+      <Card variant="outlined" className={classes.root}>
+        <div className={classes.tweetProfilePic}>
+          <Skeleton variant="circle" width={45} height={45} />
         </div>
-        <CardContent className={classes.tweetBody}>
-          <DisplayTweetMsg body={body} />
-        </CardContent>
-        <CardActions style={{ color: `${theme.palette.text.hint}` }}>
-          <Button
-            size="small"
-            color="inherit"
-            startIcon={<ChatBubbleOutlineIcon />}
-          >
-            {likesCount}
-          </Button>
-          <Button size="small" color="inherit" startIcon={<LoopIcon />}>
-            {1.3}K
-          </Button>
-          <Button
-            size="small"
-            color="inherit"
-            startIcon={<FavoriteBorderIcon />}
-          >
-            {commentsCount}
-          </Button>
-        </CardActions>
-      </div>
-    </Card>
+        <div className={classes.tweetContent}>
+          <div className={classes.tweetCardHeader}>
+            <span className={classes.authorName}>{username}</span>
+            <Typography
+              variant="caption"
+              component="span"
+              color="textSecondary"
+            >
+              @{username} &#183; {moment(parseInt(createdAt)).fromNow(true)}
+            </Typography>
+          </div>
+          <CardContent className={classes.tweetBody}>
+            <DisplayTweetMsg body={body} />
+          </CardContent>
+          <CardActions style={{ color: `${theme.palette.text.hint}` }}>
+            <Button
+              size="small"
+              color="inherit"
+              startIcon={<ChatBubbleOutlineIcon />}
+            >
+              {likesCount}
+            </Button>
+            <Button size="small" color="inherit" startIcon={<LoopIcon />}>
+              {1.3}K
+            </Button>
+            <Button
+              size="small"
+              color="inherit"
+              startIcon={<FavoriteBorderIcon />}
+            >
+              {commentsCount}
+            </Button>
+          </CardActions>
+        </div>
+      </Card>
+    </Fade>
   );
 };
 

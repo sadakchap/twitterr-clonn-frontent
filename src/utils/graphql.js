@@ -1,3 +1,5 @@
+import { gql } from "@apollo/client";
+
 export const filterUsers = async (token, text) => {
   try {
     const res = await fetch(`${process.env.REACT_APP_API_URL}`, {
@@ -24,3 +26,16 @@ export const filterUsers = async (token, text) => {
     return console.log(err);
   }
 };
+
+export const FETCH_TWEETS_QUERY = gql`
+  query {
+    getPosts {
+      id
+      body
+      username
+      createdAt
+      likesCount
+      commentsCount
+    }
+  }
+`;

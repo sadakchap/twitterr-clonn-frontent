@@ -5,6 +5,7 @@ import { EditorState, convertToRaw } from "draft-js";
 import { gql, useMutation } from "@apollo/client";
 import TweetEditor from "../TweetEditor/TweetEditor";
 import MyButton from "../MyButton/MyButton";
+import { FETCH_TWEETS_QUERY } from "../../utils/graphql";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,7 +37,17 @@ const CreateTweet = () => {
   );
 
   const [createTweet, { loading }] = useMutation(CREATE_TWEET_MUTATION, {
-    update: (_, __) => {
+    update: (proxy, result) => {
+      const data = proxy.readQuery({
+        query: FETCH_TWEETS_QUERY,
+      });
+
+      proxy.writeQuery({
+        query: FETCH_TWEETS_QUERY,
+        data: {
+          getPosts: [result.data.createPost, ...data.getPosts],
+        },
+      });
       setEditorState(EditorState.createEmpty());
     },
     variables: {

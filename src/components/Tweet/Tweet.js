@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Tweet = (props) => {
   const {
-    tweet: { username, createdAt, body },
+    tweet: { username, createdAt, body, likesCount, commentsCount },
   } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -84,7 +84,7 @@ const Tweet = (props) => {
             color="inherit"
             startIcon={<ChatBubbleOutlineIcon />}
           >
-            {515}
+            {likesCount}
           </Button>
           <Button size="small" color="inherit" startIcon={<LoopIcon />}>
             {1.3}K
@@ -94,7 +94,7 @@ const Tweet = (props) => {
             color="inherit"
             startIcon={<FavoriteBorderIcon />}
           >
-            {7.5}K
+            {commentsCount}
           </Button>
         </CardActions>
       </div>

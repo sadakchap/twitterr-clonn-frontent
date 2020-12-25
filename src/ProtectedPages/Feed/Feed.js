@@ -1,11 +1,12 @@
 import Base from "../../components/Base/Base";
 import CreateTweet from "../../components/CreateTweet/CreateTweet";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { CircularProgress } from "@material-ui/core";
 import Tweet from "../../components/Tweet/Tweet";
+import { FETCH_TWEETS_QUERY } from "../../utils/graphql";
 
 const Feed = () => {
-  const { data: { getPosts } = {}, loading } = useQuery(FETCH_TWEETS);
+  const { data: { getPosts } = {}, loading } = useQuery(FETCH_TWEETS_QUERY);
 
   return (
     <Base>
@@ -20,14 +21,3 @@ const Feed = () => {
 };
 
 export default Feed;
-
-const FETCH_TWEETS = gql`
-  query {
-    getPosts {
-      id
-      body
-      username
-      createdAt
-    }
-  }
-`;

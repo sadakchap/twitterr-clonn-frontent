@@ -1,32 +1,8 @@
-import {
-  CardContent,
-  Card,
-  makeStyles,
-  Typography,
-  Fade,
-} from "@material-ui/core";
+import { CardContent, Card, makeStyles, Fade } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
 import DisplayTweetMsg from "./DisplayTweetMsg";
-import moment from "moment";
 import TweetActions from "./TweetActions";
-
-moment.locale("en", {
-  relativeTime: {
-    future: "in %s",
-    past: "%s ago",
-    s: "a few seconds",
-    m: "a min",
-    mm: "%d mins",
-    h: "1h",
-    hh: "%dh",
-    d: "1d",
-    dd: "%dd",
-    M: "a month",
-    MM: "%d months",
-    y: "ayr",
-    yy: "%dyr",
-  },
-});
+import TweetHeader from "./TweetHeader";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,13 +16,8 @@ const useStyles = makeStyles((theme) => ({
     width: 50,
     paddingRight: "4px",
   },
-  tweetCardHeader: {
-    padding: `${theme.spacing(1)}px 0 0`,
-  },
-  authorName: {
-    fontWeight: 700,
-    display: "inline-block",
-    marginRight: `4px`,
+  tweetContent: {
+    width: `calc(100% - 50px)`,
   },
   tweetBody: {
     padding: `${theme.spacing(1)}px 0 0`,
@@ -75,16 +46,7 @@ const Tweet = (props) => {
           <Skeleton variant="circle" width={45} height={45} />
         </div>
         <div className={classes.tweetContent}>
-          <div className={classes.tweetCardHeader}>
-            <span className={classes.authorName}>{username}</span>
-            <Typography
-              variant="caption"
-              component="span"
-              color="textSecondary"
-            >
-              @{username} &#183; {moment(parseInt(createdAt)).fromNow(true)}
-            </Typography>
-          </div>
+          <TweetHeader postId={id} username={username} createdAt={createdAt} />
           <CardContent className={classes.tweetBody}>
             <DisplayTweetMsg body={body} />
           </CardContent>

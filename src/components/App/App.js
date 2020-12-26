@@ -21,6 +21,9 @@ function App() {
             light: "#74cafe",
             main: "#1da1f2",
           },
+          secondary: {
+            main: "#e2264d",
+          },
           background: {
             paper: "#1e2e3e",
             default: "#15202b",

@@ -55,7 +55,16 @@ const useStyles = makeStyles((theme) => ({
 
 const Tweet = (props) => {
   const {
-    tweet: { username, createdAt, body, likesCount, commentsCount },
+    tweet: {
+      id,
+      username,
+      createdAt,
+      body,
+      likesCount,
+      commentsCount,
+      likes,
+      comments,
+    },
   } = props;
   const classes = useStyles();
 
@@ -79,7 +88,9 @@ const Tweet = (props) => {
           <CardContent className={classes.tweetBody}>
             <DisplayTweetMsg body={body} />
           </CardContent>
-          <TweetActions likesCount={likesCount} commentsCount={commentsCount} />
+          <TweetActions
+            tweet={{ id, likes, comments, likesCount, commentsCount }}
+          />
         </div>
       </Card>
     </Fade>

@@ -1,7 +1,7 @@
 import { Button, CardActions, makeStyles } from "@material-ui/core";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import LoopIcon from "@material-ui/icons/Loop";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import LikeButton from "../LikeButton/LikeButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,7 +12,10 @@ const useStyles = makeStyles((theme) => ({
 
 const TweetActions = (props) => {
   const classes = useStyles();
-  const { likesCount, commentsCount } = props;
+  const {
+    tweet: { id, likes, likesCount, comments, commentsCount },
+  } = props;
+
   return (
     <CardActions className={classes.root}>
       <Button
@@ -20,14 +23,12 @@ const TweetActions = (props) => {
         color="inherit"
         startIcon={<ChatBubbleOutlineIcon />}
       >
-        {likesCount}
+        {commentsCount}
       </Button>
       <Button size="small" color="inherit" startIcon={<LoopIcon />}>
         {1.3}K
       </Button>
-      <Button size="small" color="inherit" startIcon={<FavoriteBorderIcon />}>
-        {commentsCount}
-      </Button>
+      <LikeButton tweet={{ id, likes, likesCount }} />
     </CardActions>
   );
 };

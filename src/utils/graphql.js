@@ -36,6 +36,15 @@ export const FETCH_TWEETS_QUERY = gql`
       createdAt
       likesCount
       commentsCount
+      likes {
+        id
+        username
+      }
+      comments {
+        id
+        body
+        username
+      }
     }
   }
 `;

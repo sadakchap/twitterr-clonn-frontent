@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import { AuthContext } from "../../contexts/auth";
 import { gql, useMutation } from "@apollo/client";
+import { FETCH_TWEETS_QUERY } from "../../utils/graphql";
 
 moment.updateLocale("en", {
   relativeTime: {
@@ -63,6 +64,16 @@ const TweetHeader = (props) => {
   const [deleteTweet] = useMutation(DELETE_TWEET_MUTATION, {
     update: (proxy, result) => {
       console.log(result);
+      const data = proxy.readQuery({
+        query: FETCH_TWEETS_QUERY,
+      });
+
+      proxy.writeQuery({
+        query: FETCH_TWEETS_QUERY,
+        data: {
+          getPosts: data.getPosts.filter((tweet) => tweet.id !== postId),
+        },
+      });
     },
     onError: () => {},
     variables: {

@@ -36,6 +36,7 @@ const Tweet = (props) => {
       likes,
       comments,
     },
+    showActions = true,
   } = props;
   const classes = useStyles();
 
@@ -50,9 +51,11 @@ const Tweet = (props) => {
           <CardContent className={classes.tweetBody}>
             <DisplayTweetMsg body={body} />
           </CardContent>
-          <TweetActions
-            tweet={{ id, likes, comments, likesCount, commentsCount }}
-          />
+          {showActions && (
+            <TweetActions
+              tweet={{ id, likes, comments, likesCount, commentsCount }}
+            />
+          )}
         </div>
       </Card>
     </Fade>

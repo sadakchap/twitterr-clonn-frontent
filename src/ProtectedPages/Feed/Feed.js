@@ -14,6 +14,7 @@ const Feed = () => {
       {loading ? (
         <CircularProgress color="primary" />
       ) : (
+        getPosts &&
         getPosts.map((tweet) => <Tweet key={tweet.id} tweet={tweet} />)
       )}
     </Base>

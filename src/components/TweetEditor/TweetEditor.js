@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 const TweetEditor = (props) => {
   const classes = useStyles();
   const { user } = useContext(AuthContext);
-  const { editorState, setEditorState } = props;
+  const { editorState, setEditorState, placeHolderText } = props;
 
   const [suggestions, setSuggestions] = useState([]);
   const editor = useRef(null);
@@ -51,7 +51,7 @@ const TweetEditor = (props) => {
         editorState={editorState}
         onChange={setEditorState}
         plugins={plugins}
-        placeholder="What's happening?"
+        placeholder={placeHolderText}
         ref={editor}
       />
       <MentionSuggestions

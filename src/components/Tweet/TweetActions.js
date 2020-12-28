@@ -1,7 +1,11 @@
 import { Button, CardActions, makeStyles } from "@material-ui/core";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import LoopIcon from "@material-ui/icons/Loop";
+import { useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { AuthContext } from "../../contexts/auth";
 import LikeButton from "../LikeButton/LikeButton";
+import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,16 +16,32 @@ const useStyles = makeStyles((theme) => ({
 
 const TweetActions = (props) => {
   const classes = useStyles();
+  let location = useLocation();
   const {
     tweet: { id, likes, likesCount, comments, commentsCount },
   } = props;
+  const { user } = useContext(AuthContext);
+
+  const userCommentExists =
+    comments.findIndex((comment) => comment.username === user.username) > -1;
 
   return (
     <CardActions className={classes.root}>
       <Button
         size="small"
-        color="inherit"
-        startIcon={<ChatBubbleOutlineIcon />}
+        color={userCommentExists ? "primary" : "inherit"}
+        startIcon={
+          userCommentExists ? (
+            <ChatBubbleIcon color="primary" />
+          ) : (
+            <ChatBubbleOutlineIcon />
+          )
+        }
+        component={Link}
+        to={{
+          pathname: `/tweet/comment/${id}`,
+          state: { background: location },
+        }}
       >
         {commentsCount}
       </Button>

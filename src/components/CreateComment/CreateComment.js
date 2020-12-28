@@ -5,7 +5,6 @@ import { EditorState, convertToRaw } from "draft-js";
 import { gql, useMutation } from "@apollo/client";
 import TweetEditor from "../TweetEditor/TweetEditor";
 import MyButton from "../MyButton/MyButton";
-import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,17 +29,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateComment = ({ postId }) => {
+const CreateComment = ({ postId, setRedirectUser = (f) => f }) => {
   const classes = useStyles();
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
-  const history = useHistory();
 
   const [createComment, { loading }] = useMutation(CREATE_COMMENT_MUTATION, {
-    update: (_, result) => {
-      console.log(result);
-      history.push("/home");
+    update: (_, __) => {
+      setRedirectUser((redirect) => !redirect);
     },
     onError: () => {},
     variables: {

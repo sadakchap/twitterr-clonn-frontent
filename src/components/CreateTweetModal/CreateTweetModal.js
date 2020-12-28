@@ -5,8 +5,8 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import { useEffect } from "react";
-import { useParams, withRouter } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useHistory, useParams, withRouter } from "react-router-dom";
 import CloseIcon from "@material-ui/icons/Close";
 import { useLazyQuery, gql } from "@apollo/client";
 import Tweet from "../Tweet/Tweet";
@@ -51,6 +51,8 @@ const useStyles = makeStyles((theme) => ({
 const CreateTweetModal = (props) => {
   const classes = useStyles();
   const { type, id } = useParams();
+  const [redirectUser, setRedirectUser] = useState(false);
+  const history = useHistory();
 
   const [loadTweet, { loading, data: { getPost } = {}, called }] = useLazyQuery(
     FETCH_TWEET_QUERY,
@@ -64,10 +66,11 @@ const CreateTweetModal = (props) => {
   useEffect(() => {
     id && loadTweet();
     document.body.style.overflow = "hidden";
+    redirectUser && history.goBack();
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [id, loadTweet]);
+  }, [id, loadTweet, redirectUser, history]);
 
   const modalHeaderTitle =
     type === "compose"
@@ -109,7 +112,7 @@ const CreateTweetModal = (props) => {
               }}
             />
             <div style={{ marginTop: "8px", width: "100%" }}>
-              <CreateComment postId={id} />
+              <CreateComment postId={id} setRedirectUser={setRedirectUser} />
             </div>
           </div>
         </div>

@@ -13,7 +13,7 @@ import {
   Typography,
   useTheme,
 } from "@material-ui/core";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import HomeIcon from "@material-ui/icons/Home";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import NotificationsNoneSharpIcon from "@material-ui/icons/NotificationsNoneSharp";
@@ -74,6 +74,7 @@ const SideMenu = (props) => {
   const { window, mobileOpen, handleDrawerToggle } = props;
   const classes = useStyles();
   const theme = useTheme();
+  let location = useLocation();
   const { user, logout } = useContext(AuthContext);
 
   const drawer = (
@@ -110,7 +111,11 @@ const SideMenu = (props) => {
           <Button
             variant="contained"
             color="primary"
-            href="/compose/tweet"
+            component={Link}
+            to={{
+              pathname: `/compose/tweet`,
+              state: { background: location },
+            }}
             className={classes.tweetBtn}
           >
             Tweet

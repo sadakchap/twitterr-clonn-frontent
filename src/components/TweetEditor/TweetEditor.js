@@ -23,7 +23,7 @@ const plugins = [mentionPlugin];
 const useStyles = makeStyles((theme) => ({
   root: {
     cursor: "text",
-    padding: `${theme.spacing(2)}px`,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     borderRadius: `${theme.shape.borderRadius}px`,
     minHeight: "80px",
   },

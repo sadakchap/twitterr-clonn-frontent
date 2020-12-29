@@ -17,14 +17,15 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   rootMobile: {
-    border: "none",
+    border: `1px solid ${theme.palette.grey[800]}`,
+    borderRadius: "4px",
   },
   profilePicSection: {
-    flex: 0.1,
+    width: 45,
   },
   tweetFormSection: {
     position: "relative",
-    flex: 0.9,
+    width: "100%",
     minHeight: "6em",
     cursor: "text",
   },

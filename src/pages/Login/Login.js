@@ -107,7 +107,7 @@ const Login = (props) => {
           </Typography>
           <TextField
             id="username"
-            label="Phone, email or username"
+            label="Email or username"
             variant="outlined"
             fullWidth
             margin="normal"

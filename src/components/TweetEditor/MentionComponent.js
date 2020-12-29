@@ -5,6 +5,9 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     color: `${theme.palette.primary.main}`,
     textDecoration: "none",
+    "&:hover": {
+      textDecoration: "underline",
+    },
   },
 }));
 
@@ -14,10 +17,8 @@ const MentionComponent = (props) => {
   } = props;
   const classes = useStyles();
 
-  const mentionLink = link ? link : "https://twitter.com/";
-
   return (
-    <a href={mentionLink} spellCheck="false" className={classes.root}>
+    <a href={link} spellCheck="false" className={classes.root}>
       <span>{`@${username}`}</span>
       <span style={{ display: "none" }}>{props.children}</span>
     </a>

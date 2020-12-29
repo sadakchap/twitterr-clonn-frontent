@@ -5,7 +5,6 @@ import {
   ListItemText,
   makeStyles,
 } from "@material-ui/core";
-import Skeleton from "@material-ui/lab/Skeleton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,12 +34,10 @@ const MentionEntry = (props) => {
     <div {...parentProps} className={classes.root}>
       <ListItem button className={classes.listItem}>
         <ListItemAvatar>
-          <Avatar>
-            <Skeleton variant="circle" width={20} height={20} />
-          </Avatar>
+          <Avatar alt={mention.name} src={mention.avatar} />
         </ListItemAvatar>
         <ListItemText
-          primary={`${mention.username}`}
+          primary={`${mention.name}`}
           secondary={mention.bio && `${mention.bio}`}
         />
       </ListItem>

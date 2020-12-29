@@ -14,6 +14,7 @@ export const filterUsers = async (token, text) => {
           getUsers(filter: "${text}") {
             id
             username
+            name
             bio
             profile_pic
           }

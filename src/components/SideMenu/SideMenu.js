@@ -1,16 +1,27 @@
 import {
+  Avatar,
+  Button,
   Drawer,
   Hidden,
+  IconButton,
   List,
   ListItem,
-  ListItemIcon,
+  ListItemAvatar,
   ListItemText,
   makeStyles,
+  Tooltip,
+  Typography,
   useTheme,
 } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 import HomeIcon from "@material-ui/icons/Home";
 import TwitterIcon from "@material-ui/icons/Twitter";
+import NotificationsNoneSharpIcon from "@material-ui/icons/NotificationsNoneSharp";
+import MailOutlineOutlinedIcon from "@material-ui/icons/MailOutlineOutlined";
+import PersonIcon from "@material-ui/icons/Person";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 const drawerWidth = 300;
 
@@ -24,24 +35,98 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
   },
+  navList: {
+    position: "relative",
+    height: "100vh",
+    margin: `0 ${theme.spacing(3)}px`,
+  },
+  navLink: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+    color: "#fff",
+    textDecoration: "none",
+    transition: "0.3s ease",
+    "& svg": {
+      marginRight: `${theme.spacing(2)}px`,
+    },
+    "&:hover": {
+      color: `${theme.palette.primary.main}`,
+    },
+    "&.active": {
+      color: `${theme.palette.primary.main}`,
+    },
+  },
+  tweetBtn: {
+    color: "#fff",
+    width: "100%",
+    textTransform: "capitialize",
+    borderRadius: "1.2rem",
+    height: "40px",
+  },
+  atBottom: {
+    position: "absolute",
+    bottom: 0,
+  },
 }));
 
 const SideMenu = (props) => {
   const { window, mobileOpen, handleDrawerToggle } = props;
   const classes = useStyles();
   const theme = useTheme();
+  const { user, logout } = useContext(AuthContext);
 
   const drawer = (
     <div>
-      <List>
+      <List className={classes.navList}>
         <ListItem>
-          <TwitterIcon style={{ fontSize: "2rem" }} />
+          <TwitterIcon fontSize="large" />
         </ListItem>
-        <ListItem button component={NavLink} to="/home">
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText primary="Home" />
+        <ListItem>
+          <NavLink to="/home" className={classes.navLink}>
+            <HomeIcon fontSize="large" />
+            <Typography variant="h6">Home</Typography>
+          </NavLink>
+        </ListItem>
+        <ListItem>
+          <NavLink to="/notification" className={classes.navLink}>
+            <NotificationsNoneSharpIcon fontSize="large" />
+            <Typography variant="h6">Notification</Typography>
+          </NavLink>
+        </ListItem>
+        <ListItem>
+          <NavLink to="/messages" className={classes.navLink}>
+            <MailOutlineOutlinedIcon fontSize="large" />
+            <Typography variant="h6">Messages</Typography>
+          </NavLink>
+        </ListItem>
+        <ListItem>
+          <NavLink to="/profile" className={classes.navLink}>
+            <PersonIcon fontSize="large" />
+            <Typography variant="h6">Profile</Typography>
+          </NavLink>
+        </ListItem>
+        <ListItem>
+          <Button
+            variant="contained"
+            color="primary"
+            href="/compose/tweet"
+            className={classes.tweetBtn}
+          >
+            Tweet
+          </Button>
+        </ListItem>
+
+        <ListItem className={classes.atBottom}>
+          <ListItemAvatar>
+            <Avatar src={user.profile_pic} />
+          </ListItemAvatar>
+          <ListItemText primary={user.name} secondary={`@${user.username}`} />
+          <Tooltip title="Log Out" aria-label="Log Out">
+            <IconButton edge="end" aria-label="logout" onClick={logout}>
+              <ExitToAppIcon color="inherit" />
+            </IconButton>
+          </Tooltip>
         </ListItem>
       </List>
     </div>

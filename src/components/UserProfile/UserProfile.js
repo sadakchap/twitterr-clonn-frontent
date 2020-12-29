@@ -1,7 +1,7 @@
 import Base from "../Base/Base";
 
 const UserProfile = () => {
-  return <Base>this is user Profile</Base>;
+  return <Base>{(handleDrawerToggle) => <>This is user prfoile</>}</Base>;
 };
 
 export default UserProfile;

@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import Tweet from "../../components/Tweet/Tweet";
 import { FETCH_TWEETS_QUERY } from "../../utils/graphql";
+import ExploreSection from "../../components/ExploreSection/ExploreSection";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +35,13 @@ const useStyles = makeStyles((theme) => ({
   headerTitle: {
     margin: `0 ${theme.spacing(1)}px`,
   },
-  exploreSection: {},
+  exploreSection: {
+    width: "60%",
+    display: "block",
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
+  },
   toolBar: theme.mixins.toolbar,
 }));
 
@@ -73,7 +80,9 @@ const Feed = () => {
               )}
             </div>
           </div>
-          <div className={classes.exploreSection}></div>
+          <div className={classes.exploreSection}>
+            <ExploreSection />
+          </div>
         </div>
       )}
     </Base>

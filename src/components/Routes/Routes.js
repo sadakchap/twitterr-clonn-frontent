@@ -4,6 +4,7 @@ import Login from "../../pages/Login/Login";
 import Register from "../../pages/Register/Register";
 import Feed from "../../ProtectedPages/Feed/Feed";
 import CreateTweetModal from "../CreateTweetModal/CreateTweetModal";
+import UserProfile from "../UserProfile/UserProfile";
 import PrivateRoute from "./PrivateRoute";
 
 const Routes = () => {
@@ -22,6 +23,7 @@ const Routes = () => {
           path="/compose/tweet"
           component={CreateTweetModal}
         />
+        <PrivateRoute exact path="/:username" component={UserProfile} />
         <Route>{"404"}</Route>
       </Switch>
       {background && (

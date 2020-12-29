@@ -62,7 +62,7 @@ const TweetHeader = (props) => {
   const [openDropDown, setOpenDropDown] = useState(false);
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, setOpenDropDown);
-  const { postId, username, createdAt } = props;
+  const { postId, username, createdAt, name } = props;
 
   const [deleteTweet] = useMutation(DELETE_TWEET_MUTATION, {
     update: (proxy, result) => {
@@ -91,7 +91,7 @@ const TweetHeader = (props) => {
     <div className={classes.tweetCardHeader}>
       <Grid container justify="space-between" alignItems="flex-start">
         <Grid item>
-          <span className={classes.authorName}>{username}</span>
+          <span className={classes.authorName}>{name}</span>
           <Typography variant="caption" component="span" color="textSecondary">
             @{username} &#183; {moment(parseInt(createdAt)).fromNow(true)}
           </Typography>

@@ -172,6 +172,7 @@ const LOGIN_USER_QUERY = gql`
       id
       username
       token
+      profile_pic
     }
   }
 `;

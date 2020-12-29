@@ -1,5 +1,4 @@
-import { CardContent, Card, makeStyles, Fade } from "@material-ui/core";
-import Skeleton from "@material-ui/lab/Skeleton";
+import { CardContent, Card, makeStyles, Fade, Avatar } from "@material-ui/core";
 import DisplayTweetMsg from "./DisplayTweetMsg";
 import TweetActions from "./TweetActions";
 import TweetHeader from "./TweetHeader";
@@ -9,8 +8,14 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: `${theme.spacing(2)}px`,
     display: "flex",
-    maxWidth: 600,
     width: "100%",
+    border: "none",
+    borderBottom: `1px solid ${theme.palette.grey[700]}`,
+    backgroundColor: `${theme.palette.background.default}`,
+    "&:hover": {
+      cursor: "pointer",
+      backgroundColor: `${theme.palette.background.paper}`,
+    },
   },
   tweetProfilePic: {
     width: 50,
@@ -35,19 +40,31 @@ const Tweet = (props) => {
       commentsCount,
       likes,
       comments,
+      author: { name, profile_pic },
     },
     showActions = true,
   } = props;
   const classes = useStyles();
 
   return (
-    <Fade in={true} timeout={500}>
+    <Fade
+      in={true}
+      timeout={500}
+      style={{
+        transition: `opacity 500ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 0.2s`,
+      }}
+    >
       <Card variant="outlined" className={classes.root}>
         <div className={classes.tweetProfilePic}>
-          <Skeleton variant="circle" width={45} height={45} />
+          <Avatar src={profile_pic} alt={username} />
         </div>
         <div className={classes.tweetContent}>
-          <TweetHeader postId={id} username={username} createdAt={createdAt} />
+          <TweetHeader
+            postId={id}
+            name={name}
+            username={username}
+            createdAt={createdAt}
+          />
           <CardContent className={classes.tweetBody}>
             <DisplayTweetMsg body={body} />
           </CardContent>

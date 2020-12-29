@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { CircularProgress, makeStyles, Paper } from "@material-ui/core";
-import Skeleton from "@material-ui/lab/Skeleton";
+import { useContext, useState } from "react";
+import { Avatar, CircularProgress, makeStyles, Paper } from "@material-ui/core";
 import { EditorState, convertToRaw } from "draft-js";
 import { gql, useMutation } from "@apollo/client";
 import TweetEditor from "../TweetEditor/TweetEditor";
 import MyButton from "../MyButton/MyButton";
+import { AuthContext } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +35,8 @@ const CreateComment = ({ postId, setRedirectUser = (f) => f }) => {
     EditorState.createEmpty()
   );
 
+  const { user } = useContext(AuthContext);
+
   const [createComment, { loading }] = useMutation(CREATE_COMMENT_MUTATION, {
     update: (_, __) => {
       setRedirectUser((redirect) => !redirect);
@@ -58,13 +60,13 @@ const CreateComment = ({ postId, setRedirectUser = (f) => f }) => {
       ) : (
         <>
           <div className={classes.profilePicSection}>
-            <Skeleton variant="circle" width={40} height={40} />
+            <Avatar src={user.profile_pic} />
           </div>
           <div className={classes.tweetFormSection}>
             <TweetEditor
               editorState={editorState}
               setEditorState={setEditorState}
-              placeHolderText={"Reply to tweet..."}
+              placeHolderText={"Tweet your reply..."}
             />
             <div className={classes.tweetControlDiv}>
               <div className=""></div>

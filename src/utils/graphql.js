@@ -46,6 +46,10 @@ export const FETCH_TWEETS_QUERY = gql`
         body
         username
       }
+      author {
+        name
+        profile_pic
+      }
     }
   }
 `;

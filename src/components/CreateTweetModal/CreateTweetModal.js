@@ -77,7 +77,7 @@ const CreateTweetModal = (props) => {
       ? "Create Tweet"
       : type === "edit"
       ? "Update Tweet"
-      : "Reply to Tweet";
+      : "Tweet your reply";
 
   return (
     <div
@@ -140,6 +140,10 @@ const FETCH_TWEET_QUERY = gql`
         id
         body
         username
+      }
+      author {
+        name
+        profile_pic
       }
     }
   }

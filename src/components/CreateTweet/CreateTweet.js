@@ -1,17 +1,18 @@
-import { useState } from "react";
-import { CircularProgress, makeStyles, Paper } from "@material-ui/core";
-import Skeleton from "@material-ui/lab/Skeleton";
+import { useContext, useState } from "react";
+import { Avatar, CircularProgress, makeStyles } from "@material-ui/core";
 import { EditorState, convertToRaw } from "draft-js";
 import { gql, useMutation } from "@apollo/client";
 import TweetEditor from "../TweetEditor/TweetEditor";
 import MyButton from "../MyButton/MyButton";
 import { FETCH_TWEETS_QUERY } from "../../utils/graphql";
 import { useHistory } from "react-router-dom";
+import { AuthContext } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    border: `1px solid ${theme.palette.text.disabled}`,
+    borderTop: `1px solid ${theme.palette.grey[700]}`,
+    borderBottom: `1px solid ${theme.palette.grey[700]}`,
     padding: `${theme.spacing(2)}px`,
     display: "flex",
   },
@@ -34,15 +35,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateTweet = ({
-  showAsModal = false,
-  placeHolderText = "What's Happening",
-}) => {
+const CreateTweet = ({ showAsModal = false }) => {
   const classes = useStyles();
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
   const history = useHistory();
+  const { user } = useContext(AuthContext);
 
   const [createTweet, { loading }] = useMutation(CREATE_TWEET_MUTATION, {
     update: (proxy, result) => {
@@ -73,7 +72,7 @@ const CreateTweet = ({
   };
 
   return (
-    <Paper
+    <div
       className={
         showAsModal ? `${classes.rootMobile} ${classes.root}` : classes.root
       }
@@ -83,13 +82,13 @@ const CreateTweet = ({
       ) : (
         <>
           <div className={classes.profilePicSection}>
-            <Skeleton variant="circle" width={40} height={40} />
+            <Avatar src={user.profile_pic} />
           </div>
           <div className={classes.tweetFormSection}>
             <TweetEditor
               editorState={editorState}
               setEditorState={setEditorState}
-              placeHolderText={placeHolderText}
+              placeHolderText={"What's happening?"}
             />
             <div className={classes.tweetControlDiv}>
               <div className=""></div>
@@ -107,7 +106,7 @@ const CreateTweet = ({
           </div>
         </>
       )}
-    </Paper>
+    </div>
   );
 };
 

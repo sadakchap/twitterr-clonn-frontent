@@ -12,7 +12,7 @@ import { NavLink } from "react-router-dom";
 import HomeIcon from "@material-ui/icons/Home";
 import TwitterIcon from "@material-ui/icons/Twitter";
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const useStyles = makeStyles((theme) => ({
   drawer: {

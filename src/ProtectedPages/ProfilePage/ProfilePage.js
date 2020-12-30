@@ -12,6 +12,8 @@ import { useParams } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import UserExtraInfo from "./UserExtraInfo";
 import UserActivityTabs from "./UserActivityTabs";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,6 +76,7 @@ const useStyles = makeStyles((theme) => ({
 const ProfilePage = () => {
   const classes = useStyles();
   const { username } = useParams();
+  const { user } = useContext(AuthContext);
 
   const { loading, data: { getUser } = {} } = useQuery(FETCH_USER_QUERY, {
     variables: {
@@ -108,13 +111,15 @@ const ProfilePage = () => {
               </div>
               <div className={classes.imageSection}>
                 <Avatar src={getUser.profile_pic} className={classes.avatar} />
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  className={classes.editBtn}
-                >
-                  Edit Profile
-                </Button>
+                {user.id === getUser.id && (
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    className={classes.editBtn}
+                  >
+                    Edit Profile
+                  </Button>
+                )}
               </div>
               <div className={classes.toolBar}></div>
               <div className={classes.userInfo}>

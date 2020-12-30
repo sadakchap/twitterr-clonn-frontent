@@ -1,10 +1,11 @@
 import { Button, IconButton, makeStyles, TextField } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { useMutation, gql } from "@apollo/client";
 import { FETCH_USER_QUERY } from "../../utils/graphql";
 import { useHistory } from "react-router-dom";
 import { storageRef } from "../../firebase/firebaseConfig";
+import { AuthContext } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -55,6 +56,7 @@ const ProfileEditForm = (props) => {
   const [selectedFile, setSelectedFile] = useState("");
   const [previewImg, setPreviewImg] = useState("");
   const history = useHistory();
+  const { updateState } = useContext(AuthContext);
 
   const handleChange = (name) => (e) =>
     setValues({ ...values, [name]: e.target.value });
@@ -95,7 +97,10 @@ const ProfileEditForm = (props) => {
           getUser: { ...data.getUser, ...result.data.updateUser },
         },
       });
-
+      updateState({
+        name: result.data.updateUser.name,
+        profile_pic: result.data.updateUser.profile_pic,
+      });
       history.goBack();
     },
     onError: () => {},

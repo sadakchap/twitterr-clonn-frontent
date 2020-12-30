@@ -27,6 +27,8 @@ const authReducer = (state, action) => {
       return { ...state, user: action.payload };
     case "LOGOUT":
       return { ...state, user: null };
+    case "UPDATE_DATA":
+      return { ...state, user: { ...state.user, ...action.payload } };
     default:
       return state;
   }
@@ -50,8 +52,15 @@ const AuthContextProvider = (props) => {
     });
   };
 
+  const updateState = (userData) => {
+    dispatch({
+      type: "UPDATE_DATA",
+      payload: userData,
+    });
+  };
+
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
+    <AuthContext.Provider value={{ ...state, login, logout, updateState }}>
       {props.children}
     </AuthContext.Provider>
   );

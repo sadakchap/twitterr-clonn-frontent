@@ -102,7 +102,7 @@ const SideMenu = (props) => {
           </NavLink>
         </ListItem>
         <ListItem>
-          <NavLink to="/profile" className={classes.navLink}>
+          <NavLink to={`/${user.username}`} className={classes.navLink}>
             <PersonIcon fontSize="large" />
             <Typography variant="h6">Profile</Typography>
           </NavLink>

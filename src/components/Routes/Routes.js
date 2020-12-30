@@ -3,9 +3,9 @@ import Home from "../../pages/Home/Home";
 import Login from "../../pages/Login/Login";
 import Register from "../../pages/Register/Register";
 import Feed from "../../ProtectedPages/Feed/Feed";
+import ProfilePage from "../../ProtectedPages/ProfilePage/ProfilePage";
 import CreateTweetModal from "../CreateTweetModal/CreateTweetModal";
 import ShowTweetModal from "../ShowTweetModal/ShowTweetModal";
-import UserProfile from "../UserProfile/UserProfile";
 import PrivateRoute from "./PrivateRoute";
 
 const Routes = () => {
@@ -20,7 +20,7 @@ const Routes = () => {
         <Route exact path="/i/flow/signup" component={Register} />
         <PrivateRoute exact path="/home" component={Feed} />
         <PrivateRoute path="/tweet/:type/:id" component={ShowTweetModal} />
-        <PrivateRoute exact path="/:username" component={UserProfile} />
+        <PrivateRoute exact path="/:username" component={ProfilePage} />
         <Route>{"404"}</Route>
       </Switch>
       {background && (

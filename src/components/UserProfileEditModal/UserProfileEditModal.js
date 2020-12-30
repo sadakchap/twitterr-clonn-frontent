@@ -1,4 +1,4 @@
-import { Button, IconButton, makeStyles, Typography } from "@material-ui/core";
+import { IconButton, makeStyles, Typography } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import CloseIcon from "@material-ui/icons/Close";
 import ProfileEditForm from "./ProfileEditForm";
@@ -71,13 +71,6 @@ const UserProfileEditModal = (props) => {
             </IconButton>
             Edit Profile
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.saveBtn}
-          >
-            Save
-          </Button>
         </div>
 
         <div className={classes.modalBody}>

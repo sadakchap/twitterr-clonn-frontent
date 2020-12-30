@@ -1,9 +1,10 @@
 import { Button, IconButton, makeStyles, TextField } from "@material-ui/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { useMutation, gql } from "@apollo/client";
 import { FETCH_USER_QUERY } from "../../utils/graphql";
 import { useHistory } from "react-router-dom";
+import { storageRef } from "../../firebase/firebaseConfig";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -50,16 +51,34 @@ const ProfileEditForm = (props) => {
     location: props.user.location,
     website: props.user.website,
     profile_pic: props.user.profile_pic,
-    pic_changed: false,
   });
+  const [selectedFile, setSelectedFile] = useState("");
+  const [previewImg, setPreviewImg] = useState("");
   const history = useHistory();
 
   const handleChange = (name) => (e) =>
     setValues({ ...values, [name]: e.target.value });
 
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreviewImg("");
+      return;
+    }
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreviewImg(objectUrl);
+
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
   const handleFileUpload = (e) => {
-    setValues({ ...values, pic_changed: true });
     // preview change
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile("");
+      return;
+    }
+    // check for jpg, jpeg images only
+    setSelectedFile(e.target.files[0]);
   };
 
   const [updateUser, { loading }] = useMutation(UPDATE_PROFILE_MUTATION, {
@@ -85,7 +104,29 @@ const ProfileEditForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateUser();
+    if (selectedFile instanceof File) {
+      // upload to firebase and get url string
+      const uploadTask = storageRef
+        .child(`images/${selectedFile.name}`)
+        .put(selectedFile);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {},
+        (err) => {
+          console.log("error in uploading", err);
+          updateUser();
+        },
+        async () => {
+          // uploaded successfully
+          const downloadedURL = await uploadTask.snapshot.ref.getDownloadURL();
+          updateUser({
+            variables: { ...values, profile_pic: downloadedURL },
+          });
+        }
+      );
+    } else {
+      updateUser();
+    }
   };
 
   const { name, bio, location, website, profile_pic } = values;
@@ -94,7 +135,7 @@ const ProfileEditForm = (props) => {
     <form onSubmit={handleSubmit}>
       <div className={classes.updateImages}>
         <div className={classes.profilePicDiv}>
-          <img src={profile_pic} alt={name} />
+          <img src={previewImg ? previewImg : profile_pic} alt={name} />
           <div className={classes.updateProfileBtn}>
             <input
               accept="image/*"

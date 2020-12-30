@@ -53,3 +53,24 @@ export const FETCH_TWEETS_QUERY = gql`
     }
   }
 `;
+
+export const FETCH_USER_QUERY = gql`
+  query($username: String!) {
+    getUser(username: $username) {
+      id
+      username
+      name
+      email
+      bio
+      profile_pic
+      postsCount
+      location
+      website
+      dob
+      createdAt
+      posts {
+        id
+      }
+    }
+  }
+`;

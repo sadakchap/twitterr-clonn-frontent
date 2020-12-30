@@ -8,12 +8,13 @@ import {
   Typography,
 } from "@material-ui/core";
 import ExploreSection from "../../components/ExploreSection/ExploreSection";
-import { useParams } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
 import UserExtraInfo from "./UserExtraInfo";
 import UserActivityTabs from "./UserActivityTabs";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
+import { FETCH_USER_QUERY } from "../../utils/graphql";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,6 +78,7 @@ const ProfilePage = () => {
   const classes = useStyles();
   const { username } = useParams();
   const { user } = useContext(AuthContext);
+  const location = useLocation();
 
   const { loading, data: { getUser } = {} } = useQuery(FETCH_USER_QUERY, {
     variables: {
@@ -116,6 +118,23 @@ const ProfilePage = () => {
                     variant="outlined"
                     color="primary"
                     className={classes.editBtn}
+                    component={Link}
+                    to={{
+                      pathname: "/settings/profile",
+                      state: {
+                        background: location,
+                        data: {
+                          name: getUser.name,
+                          profile_pic: getUser.profile_pic,
+                          background_pic: getUser.background_pic,
+                          bio: getUser.bio,
+                          location: getUser.location,
+                          website: getUser.website,
+                          username: getUser.username,
+                        },
+                      },
+                    }}
+                    data={getUser}
                   >
                     Edit Profile
                   </Button>
@@ -156,24 +175,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
-const FETCH_USER_QUERY = gql`
-  query($username: String!) {
-    getUser(username: $username) {
-      id
-      username
-      name
-      email
-      bio
-      profile_pic
-      postsCount
-      location
-      website
-      dob
-      createdAt
-      posts {
-        id
-      }
-    }
-  }
-`;

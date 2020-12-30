@@ -6,6 +6,7 @@ import Feed from "../../ProtectedPages/Feed/Feed";
 import ProfilePage from "../../ProtectedPages/ProfilePage/ProfilePage";
 import CreateTweetModal from "../CreateTweetModal/CreateTweetModal";
 import ShowTweetModal from "../ShowTweetModal/ShowTweetModal";
+import UserProfileEditModal from "../UserProfileEditModal/UserProfileEditModal";
 import PrivateRoute from "./PrivateRoute";
 
 const Routes = () => {
@@ -27,6 +28,10 @@ const Routes = () => {
         <>
           <PrivateRoute path="/tweet/:type/:id" component={ShowTweetModal} />
           <PrivateRoute path="/compose/tweet" component={CreateTweetModal} />
+          <PrivateRoute
+            path="/settings/profile"
+            component={UserProfileEditModal}
+          />
         </>
       )}
     </div>

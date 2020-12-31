@@ -45,6 +45,8 @@ export const FETCH_TWEETS_QUERY = gql`
         id
         body
         username
+        createdAt
+        name
       }
       author {
         name

@@ -18,6 +18,7 @@ import moment from "moment";
 import TweetActions from "../Tweet/TweetActions";
 import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
+import Comment from "../Comment/Comment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -179,6 +180,12 @@ const SingleTweet = (props) => {
                   </div>
                 </Card>
                 {/* Reply to tweets */}
+                <div className="">
+                  {comments &&
+                    comments.map((comment) => (
+                      <Comment comment={comment} key={comment.id} />
+                    ))}
+                </div>
               </div>
             )}
           </div>
@@ -210,6 +217,8 @@ const FETCH_SINGLE_TWEET_QUERY = gql`
         id
         body
         username
+        createdAt
+        name
       }
       author {
         name

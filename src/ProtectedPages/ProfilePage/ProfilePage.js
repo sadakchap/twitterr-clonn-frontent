@@ -3,18 +3,19 @@ import {
   Avatar,
   Button,
   CircularProgress,
-  Hidden,
+  IconButton,
   makeStyles,
   Typography,
 } from "@material-ui/core";
 import ExploreSection from "../../components/ExploreSection/ExploreSection";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import UserExtraInfo from "./UserExtraInfo";
 import UserActivityTabs from "./UserActivityTabs";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
 import { FETCH_USER_QUERY } from "../../utils/graphql";
+import ArrowBackOutlinedIcon from "@material-ui/icons/ArrowBackOutlined";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,6 +80,7 @@ const ProfilePage = () => {
   const { username } = useParams();
   const { user } = useContext(AuthContext);
   const location = useLocation();
+  const history = useHistory();
 
   const { loading, data: { getUser } = {} } = useQuery(FETCH_USER_QUERY, {
     variables: {
@@ -95,13 +97,9 @@ const ProfilePage = () => {
           ) : (
             <div className={classes.content}>
               <div className={classes.header}>
-                <Hidden smUp>
-                  <Avatar
-                    src="broken-img.jpg"
-                    className={classes.headerAvatar}
-                    onClick={handleDrawerToggle}
-                  />
-                </Hidden>
+                <IconButton color="primary" onClick={history.goBack}>
+                  <ArrowBackOutlinedIcon />
+                </IconButton>
                 <div className={classes.headerTitle}>
                   <Typography variant="h6" component="h6">
                     {getUser.name}

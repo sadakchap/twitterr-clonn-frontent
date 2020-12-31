@@ -6,6 +6,7 @@ import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/auth";
 import LikeButton from "../LikeButton/LikeButton";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
+import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,6 +50,19 @@ const TweetActions = (props) => {
         {1.3}K
       </Button>
       <LikeButton tweet={{ id, likes, likesCount }} />
+      <Button
+        size="small"
+        color="inherit"
+        startIcon={<VisibilityOutlinedIcon fontSize="small" />}
+        component={Link}
+        to={{
+          pathname: `/tweet/${id}`,
+          state: { data: props },
+        }}
+        style={{ textTransform: "capitalize" }}
+      >
+        View
+      </Button>
     </CardActions>
   );
 };

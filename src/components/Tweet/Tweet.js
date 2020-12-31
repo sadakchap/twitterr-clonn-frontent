@@ -1,4 +1,5 @@
 import { CardContent, Card, makeStyles, Fade, Avatar } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 import DisplayTweetMsg from "./DisplayTweetMsg";
 import TweetActions from "./TweetActions";
 import TweetHeader from "./TweetHeader";
@@ -12,6 +13,8 @@ const useStyles = makeStyles((theme) => ({
     border: "none",
     borderBottom: `1px solid ${theme.palette.grey[700]}`,
     backgroundColor: `${theme.palette.background.default}`,
+  },
+  rootHover: {
     "&:hover": {
       cursor: "pointer",
       backgroundColor: `${theme.palette.background.paper}`,
@@ -43,6 +46,7 @@ const Tweet = (props) => {
       author: { name, profile_pic },
     },
     showActions = true,
+    allowCardHover = true,
   } = props;
   const classes = useStyles();
 
@@ -54,7 +58,12 @@ const Tweet = (props) => {
         transition: `opacity 500ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 0.2s`,
       }}
     >
-      <Card variant="outlined" className={classes.root}>
+      <Card
+        variant="outlined"
+        className={
+          allowCardHover ? `${classes.root} ${classes.rootHover}` : classes.root
+        }
+      >
         <div className={classes.tweetProfilePic}>
           <Avatar src={profile_pic} alt={username} />
         </div>

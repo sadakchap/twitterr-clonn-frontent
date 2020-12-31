@@ -17,7 +17,7 @@ import DisplayTweetMsg from "../Tweet/DisplayTweetMsg";
 import moment from "moment";
 import TweetActions from "../Tweet/TweetActions";
 import { gql, useQuery } from "@apollo/client";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Comment from "../Comment/Comment";
 
 const useStyles = makeStyles((theme) => ({
@@ -92,6 +92,7 @@ const useStyles = makeStyles((theme) => ({
 const SingleTweet = (props) => {
   const classes = useStyles();
   const { tweetId } = useParams();
+  const history = useHistory();
 
   const {
     loading,
@@ -118,7 +119,7 @@ const SingleTweet = (props) => {
         <div className={classes.root}>
           <div className={classes.content}>
             <div className={classes.header}>
-              <IconButton color="primary" onClick={props.history.goBack}>
+              <IconButton color="primary" onClick={history.goBack}>
                 <ArrowBackOutlinedIcon />
               </IconButton>
               <Typography

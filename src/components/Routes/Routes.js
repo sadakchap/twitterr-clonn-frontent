@@ -20,7 +20,7 @@ const Routes = () => {
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/i/flow/signup" component={Register} />
-        <Route exact path="/tweet/:tweetId" component={SingleTweet} />
+        <PrivateRoute exact path="/tweet/:tweetId" component={SingleTweet} />
         <PrivateRoute exact path="/home" component={Feed} />
         <PrivateRoute path="/tweet/:type/:id" component={ShowTweetModal} />
         <PrivateRoute exact path="/:username" component={ProfilePage} />

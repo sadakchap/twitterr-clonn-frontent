@@ -11,6 +11,8 @@ import {
 import Tweet from "../../components/Tweet/Tweet";
 import { FETCH_TWEETS_QUERY } from "../../utils/graphql";
 import ExploreSection from "../../components/ExploreSection/ExploreSection";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 const Feed = () => {
   const classes = useStyles();
   const { data: { getPosts } = {}, loading } = useQuery(FETCH_TWEETS_QUERY);
+  const { user } = useContext(AuthContext);
 
   return (
     <Base>
@@ -57,7 +60,7 @@ const Feed = () => {
             <div className={classes.header}>
               <Hidden smUp>
                 <Avatar
-                  src="broken-img.jpg"
+                  src={user.profile_pic}
                   className={classes.headerAvatar}
                   onClick={handleDrawerToggle}
                 />

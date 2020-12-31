@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     color: `${theme.palette.text.hint}`,
     paddingLeft: 0,
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-around",
   },
 }));
 
@@ -20,11 +23,13 @@ const TweetActions = (props) => {
   let location = useLocation();
   const {
     tweet: { id, likes, likesCount, comments, commentsCount },
+    viewTweet = true,
   } = props;
   const { user } = useContext(AuthContext);
 
-  const userCommentExists =
-    comments.findIndex((comment) => comment.username === user.username) > -1;
+  const userCommentExists = !user
+    ? false
+    : comments.findIndex((comment) => comment.username === user.username) > -1;
 
   return (
     <CardActions className={classes.root}>
@@ -50,19 +55,21 @@ const TweetActions = (props) => {
         {1.3}K
       </Button>
       <LikeButton tweet={{ id, likes, likesCount }} />
-      <Button
-        size="small"
-        color="inherit"
-        startIcon={<VisibilityOutlinedIcon fontSize="small" />}
-        component={Link}
-        to={{
-          pathname: `/tweet/${id}`,
-          state: { data: props },
-        }}
-        style={{ textTransform: "capitalize" }}
-      >
-        View
-      </Button>
+      {viewTweet && (
+        <Button
+          size="small"
+          color="inherit"
+          startIcon={<VisibilityOutlinedIcon fontSize="small" />}
+          component={Link}
+          to={{
+            pathname: `/tweet/${id}`,
+            state: { data: props },
+          }}
+          style={{ textTransform: "capitalize" }}
+        >
+          View
+        </Button>
+      )}
     </CardActions>
   );
 };

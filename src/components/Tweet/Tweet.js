@@ -17,6 +17,11 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: `${theme.palette.background.paper}`,
     },
+    [theme.breakpoints.down("sm")]: {
+      "&:hover": {
+        backgroundColor: `${theme.palette.background.default}`,
+      },
+    },
   },
   tweetProfilePic: {
     width: 50,

@@ -72,6 +72,22 @@ export const FETCH_USER_QUERY = gql`
       createdAt
       posts {
         id
+        body
+        username
+        createdAt
+        likesCount
+        commentsCount
+        likes {
+          id
+          username
+        }
+        comments {
+          id
+          body
+          username
+          createdAt
+          name
+        }
       }
     }
   }

@@ -11,11 +11,11 @@ import ExploreSection from "../../components/ExploreSection/ExploreSection";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import UserExtraInfo from "./UserExtraInfo";
-import UserActivityTabs from "./UserActivityTabs";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
 import { FETCH_USER_QUERY } from "../../utils/graphql";
 import ArrowBackOutlinedIcon from "@material-ui/icons/ArrowBackOutlined";
+import Tweet from "../../components/Tweet/Tweet";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,6 +72,10 @@ const useStyles = makeStyles((theme) => ({
   },
   userInfo: {
     padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+  },
+  headingText: {
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    borderBottom: `1px solid ${theme.palette.text.secondary}`,
   },
 }));
 
@@ -158,8 +162,29 @@ const ProfilePage = () => {
                   dob={getUser.dob}
                   createdAt={getUser.createdAt}
                 />
-                {/* User activity tabs */}
-                <UserActivityTabs />
+              </div>
+              {/* User activity tabs */}
+              <div className="">
+                <Typography
+                  variant="h6"
+                  component="div"
+                  className={classes.headingText}
+                >
+                  My Tweets
+                </Typography>
+                {getUser.posts &&
+                  getUser.posts.map((tweet) => (
+                    <Tweet
+                      key={tweet.id}
+                      tweet={{
+                        ...tweet,
+                        author: {
+                          name: getUser.name,
+                          profile_pic: getUser.profile_pic,
+                        },
+                      }}
+                    />
+                  ))}
               </div>
             </div>
           )}

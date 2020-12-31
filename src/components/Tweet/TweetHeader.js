@@ -96,15 +96,15 @@ const TweetHeader = (props) => {
             @{username} &#183; {moment(parseInt(createdAt)).fromNow(true)}
           </Typography>
         </Grid>
-        <Grid item>
-          <div className={classes.moreIconDiv} ref={wrapperRef}>
-            <MoreHorizIcon
-              onClick={() => setOpenDropDown((prev) => !prev)}
-              style={{ color: "#ffffff80" }}
-            />
-            {openDropDown ? (
-              <Grow in={openDropDown} timeout={400}>
-                {user && user.username === username ? (
+        {user && user.username === username && (
+          <Grid item>
+            <div className={classes.moreIconDiv} ref={wrapperRef}>
+              <MoreHorizIcon
+                onClick={() => setOpenDropDown((prev) => !prev)}
+                style={{ color: "#ffffff80" }}
+              />
+              {openDropDown ? (
+                <Grow in={openDropDown} timeout={400}>
                   <Button
                     className={classes.moreDropDown}
                     variant="outlined"
@@ -115,19 +115,11 @@ const TweetHeader = (props) => {
                   >
                     Delete
                   </Button>
-                ) : (
-                  <Typography
-                    variant="caption"
-                    component="div"
-                    className={classes.moreDropDown}
-                  >
-                    -
-                  </Typography>
-                )}
-              </Grow>
-            ) : null}
-          </div>
-        </Grid>
+                </Grow>
+              ) : null}
+            </div>
+          </Grid>
+        )}
       </Grid>
     </div>
   );

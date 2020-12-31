@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,10 +19,10 @@ const MentionComponent = (props) => {
   const classes = useStyles();
 
   return (
-    <a href={link} spellCheck="false" className={classes.root}>
+    <Link to={link} spellCheck="false" className={classes.root}>
       <span>{`@${username}`}</span>
       <span style={{ display: "none" }}>{props.children}</span>
-    </a>
+    </Link>
   );
 };
 

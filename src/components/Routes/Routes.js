@@ -23,14 +23,17 @@ const Routes = () => {
         <Route exact path="/login" component={Login} />
         <Route exact path="/i/flow/signup" component={Register} />
         <PrivateRoute exact path="/home" component={Feed} />
-        <MessageProvider>
-          <PrivateRoute exact path="/messages" component={Messages} />
-        </MessageProvider>
         <PrivateRoute exact path="/tweet/:tweetId" component={SingleTweet} />
         <PrivateRoute path="/tweet/:type/:id" component={ShowTweetModal} />
+        <PrivateRoute exact path="/messages">
+          <MessageProvider>
+            <Messages />
+          </MessageProvider>
+        </PrivateRoute>
         <PrivateRoute exact path="/:username" component={ProfilePage} />
         <Route>{"404"}</Route>
       </Switch>
+
       {background && (
         <>
           <PrivateRoute path="/tweet/:type/:id" component={ShowTweetModal} />

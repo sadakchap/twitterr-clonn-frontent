@@ -3,6 +3,7 @@ import { Typography } from "@material-ui/core";
 import { useEffect } from "react";
 import Spinner from "../../components/Spinner/Spinner";
 import { useMessageDispatch, useMessageState } from "../../contexts/messages";
+import Message from "./Message";
 
 const SelectedUserMessages = () => {
   const { users } = useMessageState();
@@ -36,16 +37,14 @@ const SelectedUserMessages = () => {
   }, [getMessages]);
 
   return (
-    <div>
+    <>
       {!selectedUser && "No chat selected!"}
       {loading && <Spinner />}
 
       {selectedUser &&
         selectedUser.messages &&
         selectedUser.messages.map((msg) => (
-          <Typography key={msg.id} variant="body2">
-            {msg.content}
-          </Typography>
+          <Message key={msg.id} message={msg} />
         ))}
       {selectedUser &&
         selectedUser.messages &&
@@ -54,7 +53,7 @@ const SelectedUserMessages = () => {
             You are connected now! send a wave!
           </Typography>
         )}
-    </div>
+    </>
   );
 };
 

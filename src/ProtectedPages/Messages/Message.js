@@ -1,6 +1,7 @@
-import { makeStyles, Typography } from "@material-ui/core";
+import { makeStyles, Tooltip, Typography } from "@material-ui/core";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: (props) => ({
@@ -17,17 +18,34 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
+const useStylesBootstrap = makeStyles((theme) => ({
+  arrow: {
+    color: theme.palette.common.black,
+  },
+  tooltip: {
+    backgroundColor: theme.palette.common.black,
+  },
+}));
+
 const Message = ({ message }) => {
   const { user } = useContext(AuthContext);
 
   const sent = user.username === message.from;
   const classes = useStyles({ sent });
+  const toolTipClasses = useStylesBootstrap();
 
   return (
     <div className={classes.root}>
-      <Typography className={classes.msgText} variant="body2">
-        {message.content}
-      </Typography>
+      <Tooltip
+        title={moment(new Date(message.createdAt)).format("MMM DD, hh:mm:s a")}
+        arrow
+        placement={sent ? "left" : "right"}
+        classes={toolTipClasses}
+      >
+        <Typography className={classes.msgText} variant="body2">
+          {message.content}
+        </Typography>
+      </Tooltip>
     </div>
   );
 };

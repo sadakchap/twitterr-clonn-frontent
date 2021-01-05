@@ -50,6 +50,7 @@ const AuthContextProvider = (props) => {
     dispatch({
       type: "LOGOUT",
     });
+    window.location.href = "/login";
   };
 
   const updateState = (userData) => {

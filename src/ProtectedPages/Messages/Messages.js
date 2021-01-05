@@ -6,13 +6,13 @@ import {
   ListItemAvatar,
   ListItemText,
   makeStyles,
-  Paper,
   Typography,
 } from "@material-ui/core";
 import Base from "../../components/Base/Base";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import Spinner from "../../components/Spinner/Spinner";
+import { useEffect, useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,8 +62,19 @@ const useStyles = makeStyles((theme) => ({
 
 const Messages = () => {
   const classes = useStyles();
-
   const { loading, data: { getUsers } = {} } = useQuery(FETCH_USER_QUERY);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const [
+    getMessagesFrom,
+    { called, loading: messagesLoading, data: { getMessages } = {} },
+  ] = useLazyQuery(FETCH_MESSAGES_FROM);
+
+  useEffect(() => {
+    if (selectedUser) {
+      getMessagesFrom({ variables: { from: selectedUser } });
+    }
+  }, [selectedUser, getMessagesFrom]);
 
   return (
     <Base>
@@ -91,6 +102,7 @@ const Messages = () => {
                         button
                         key={user.id}
                         className={classes.borderBottom}
+                        onClick={() => setSelectedUser(user.username)}
                       >
                         <ListItemAvatar>
                           <Avatar src={user.profile_pic} />
@@ -122,7 +134,15 @@ const Messages = () => {
             </div>
           </Grid>
           <Grid item xs={12} sm={7} md={8}>
-            <Paper>one Messsage box</Paper>
+            {!called && "No chat selected!"}
+            {messagesLoading && <Spinner />}
+            {getMessages &&
+              getMessages.length > 0 &&
+              getMessages.map((message) => (
+                <Typography variant="body2" component="div" key={message.id}>
+                  {message.content}
+                </Typography>
+              ))}
           </Grid>
         </Grid>
       )}
@@ -146,6 +166,18 @@ const FETCH_USER_QUERY = gql`
         from
         createdAt
       }
+    }
+  }
+`;
+
+const FETCH_MESSAGES_FROM = gql`
+  query($from: String!) {
+    getMessages(from: $from) {
+      id
+      content
+      to
+      from
+      createdAt
     }
   }
 `;

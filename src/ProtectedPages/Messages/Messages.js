@@ -25,7 +25,7 @@ const Messages = () => {
           <Grid item xs={12} sm={5} md={4}>
             <Users />
           </Grid>
-          <Grid item xs={12} sm={7} md={8} container direction="column-reverse">
+          <Grid item xs={12} sm={7} md={8}>
             <SelectedUserMessages />
           </Grid>
         </Grid>

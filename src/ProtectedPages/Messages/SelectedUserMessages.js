@@ -16,7 +16,7 @@ const SelectedUserMessages = () => {
   ] = useLazyQuery(FETCH_MESSAGES_FROM);
 
   useEffect(() => {
-    if (selectedUser) {
+    if (selectedUser && !selectedUser.messages) {
       getMessagesFrom({ variables: { from: selectedUser.username } });
     }
   }, [selectedUser, getMessagesFrom]);

@@ -9,7 +9,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import Base from "../../components/Base/Base";
-import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import Spinner from "../../components/Spinner/Spinner";
 import { useEffect, useState } from "react";
@@ -31,29 +30,6 @@ const useStyles = makeStyles((theme) => ({
     "& ul.MuiList-root": {
       padding: 0,
     },
-  },
-  searchWrapper: {
-    padding: `${theme.spacing(1)}px`,
-    borderBottom: `1px solid ${theme.palette.grey[700]}`,
-  },
-  searchInputDiv: {
-    display: "flex",
-    backgroundColor: `${theme.palette.background.paper}`,
-    padding: `0 ${theme.spacing(2)}px`,
-    borderRadius: `20px`,
-    alignItems: "center",
-    width: "100%",
-    boxShadow: `0 0 2px rgba(237,237,237,.1)`,
-  },
-  searchInput: {
-    height: "40px",
-    backgroundColor: "transparent",
-    border: "none",
-    outline: "none",
-    width: "100%",
-    color: "#fff",
-    letterSpacing: "0.5px",
-    fontWeight: 500,
   },
   borderBottom: {
     borderBottom: `1px solid ${theme.palette.grey[700]}`,
@@ -83,16 +59,7 @@ const Messages = () => {
           <Grid item xs={12} sm={5} md={4}>
             <div className={classes.messageListWrapper}>
               <h3>Messages</h3>
-              <div className={classes.searchWrapper}>
-                <div className={classes.searchInputDiv}>
-                  <SearchOutlinedIcon color="disabled" />
-                  <input
-                    className={classes.searchInput}
-                    type="text"
-                    placeholder="Search for people"
-                  />
-                </div>
-              </div>
+
               <div className="">
                 {loading && <Spinner />}
                 {getUsers && getUsers.length > 0 && (

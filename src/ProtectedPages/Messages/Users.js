@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import Spinner from "../../components/Spinner/Spinner";
+import { useMessageDispatch, useMessageState } from "../../contexts/messages";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,16 +31,26 @@ const useStyles = makeStyles((theme) => ({
 
 const Users = ({ setSelectedUser }) => {
   const classes = useStyles();
-  const { loading, data: { getUsers } = {} } = useQuery(FETCH_USER_QUERY);
+  const dispatch = useMessageDispatch();
+  const { users } = useMessageState();
+  const { loading } = useQuery(FETCH_USER_QUERY, {
+    onCompleted: (result) => {
+      dispatch({
+        type: "SET_USERS",
+        payload: result.getUsers,
+      });
+    },
+    onError: () => {},
+  });
 
   return (
     <div className={classes.root}>
       <h3>Messages</h3>
       <div className="">
         {loading && <Spinner />}
-        {getUsers && getUsers.length > 0 && (
+        {users && users.length > 0 && (
           <List>
-            {getUsers.map((user) => (
+            {users.map((user) => (
               <ListItem
                 button
                 key={user.id}

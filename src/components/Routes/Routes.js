@@ -1,4 +1,5 @@
 import { Route, Switch, useLocation } from "react-router-dom";
+import { MessageProvider } from "../../contexts/messages";
 import Home from "../../pages/Home/Home";
 import Login from "../../pages/Login/Login";
 import Register from "../../pages/Register/Register";
@@ -22,7 +23,9 @@ const Routes = () => {
         <Route exact path="/login" component={Login} />
         <Route exact path="/i/flow/signup" component={Register} />
         <PrivateRoute exact path="/home" component={Feed} />
-        <PrivateRoute exact path="/messages" component={Messages} />
+        <MessageProvider>
+          <PrivateRoute exact path="/messages" component={Messages} />
+        </MessageProvider>
         <PrivateRoute exact path="/tweet/:tweetId" component={SingleTweet} />
         <PrivateRoute path="/tweet/:type/:id" component={ShowTweetModal} />
         <PrivateRoute exact path="/:username" component={ProfilePage} />

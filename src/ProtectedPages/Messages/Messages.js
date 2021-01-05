@@ -1,17 +1,9 @@
-import {
-  Avatar,
-  Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import Base from "../../components/Base/Base";
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
-import Spinner from "../../components/Spinner/Spinner";
+import { gql, useLazyQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
+import Users from "./Users";
+import SelectedUserMessages from "./SelectedUserMessages";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,18 +11,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "100vh",
     overflow: "hidden",
   },
-  messageListWrapper: {
-    border: `1px solid ${theme.palette.grey[700]}`,
-    height: "100%",
-    "& h3": {
-      padding: `${theme.spacing(2)}px`,
-      margin: 0,
-      borderBottom: `1px solid ${theme.palette.grey[700]}`,
-    },
-    "& ul.MuiList-root": {
-      padding: 0,
-    },
-  },
+
   borderBottom: {
     borderBottom: `1px solid ${theme.palette.grey[700]}`,
   },
@@ -38,12 +19,12 @@ const useStyles = makeStyles((theme) => ({
 
 const Messages = () => {
   const classes = useStyles();
-  const { loading, data: { getUsers } = {} } = useQuery(FETCH_USER_QUERY);
+
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [
     getMessagesFrom,
-    { called, loading: messagesLoading, data: { getMessages } = {} },
+    { loading: messagesLoading, data: { getMessages } = {} },
   ] = useLazyQuery(FETCH_MESSAGES_FROM);
 
   useEffect(() => {
@@ -54,62 +35,16 @@ const Messages = () => {
 
   return (
     <Base>
-      {(handleDrawerToggle) => (
+      {(_) => (
         <Grid container className={classes.root}>
           <Grid item xs={12} sm={5} md={4}>
-            <div className={classes.messageListWrapper}>
-              <h3>Messages</h3>
-
-              <div className="">
-                {loading && <Spinner />}
-                {getUsers && getUsers.length > 0 && (
-                  <List>
-                    {getUsers.map((user) => (
-                      <ListItem
-                        button
-                        key={user.id}
-                        className={classes.borderBottom}
-                        onClick={() => setSelectedUser(user.username)}
-                      >
-                        <ListItemAvatar>
-                          <Avatar src={user.profile_pic} />
-                        </ListItemAvatar>
-                        <ListItemText>
-                          <Typography variant="subtitle2" component="span">
-                            {user.name}{" "}
-                            <Typography
-                              variant="caption"
-                              component="span"
-                              color="textSecondary"
-                            >{`@${user.username}`}</Typography>
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            component="p"
-                            color="textSecondary"
-                          >
-                            {user.lastMessage.content
-                              ? user.lastMessage.content
-                              : "You are connected now!"}
-                          </Typography>
-                        </ListItemText>
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-              </div>
-            </div>
+            <Users setSelectedUser={setSelectedUser} />
           </Grid>
           <Grid item xs={12} sm={7} md={8}>
-            {!called && "No chat selected!"}
-            {messagesLoading && <Spinner />}
-            {getMessages &&
-              getMessages.length > 0 &&
-              getMessages.map((message) => (
-                <Typography variant="body2" component="div" key={message.id}>
-                  {message.content}
-                </Typography>
-              ))}
+            <SelectedUserMessages
+              messagesLoading={messagesLoading}
+              getMessages={getMessages}
+            />
           </Grid>
         </Grid>
       )}
@@ -118,24 +53,6 @@ const Messages = () => {
 };
 
 export default Messages;
-
-const FETCH_USER_QUERY = gql`
-  query {
-    getUsers {
-      id
-      name
-      username
-      profile_pic
-      lastMessage {
-        id
-        content
-        to
-        from
-        createdAt
-      }
-    }
-  }
-`;
 
 const FETCH_MESSAGES_FROM = gql`
   query($from: String!) {

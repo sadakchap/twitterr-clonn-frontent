@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Users = ({ setSelectedUser }) => {
+const Users = () => {
   const classes = useStyles();
   const dispatch = useMessageDispatch();
   const { users } = useMessageState();
@@ -54,8 +54,14 @@ const Users = ({ setSelectedUser }) => {
               <ListItem
                 button
                 key={user.id}
+                selected={!!user.selected}
                 className={classes.borderBottom}
-                onClick={() => setSelectedUser(user.username)}
+                onClick={() =>
+                  dispatch({
+                    type: "SET_SELECTED_USER",
+                    payload: user.username,
+                  })
+                }
               >
                 <ListItemAvatar>
                   <Avatar src={user.profile_pic} />

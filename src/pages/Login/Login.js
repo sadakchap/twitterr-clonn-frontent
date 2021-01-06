@@ -67,7 +67,7 @@ const Login = (props) => {
         username: "",
         password: "",
       });
-      props.history.push("/home");
+      window.location.href = "/home";
     },
     onError(err) {
       // console.log(err.graphQLErrors[0].extensions.exception.errors);

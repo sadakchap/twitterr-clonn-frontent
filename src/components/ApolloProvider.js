@@ -2,13 +2,27 @@ import {
   ApolloClient,
   ApolloProvider,
   InMemoryCache,
+  split,
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import App from "./App/App";
 
-const httpLink = createHttpLink({
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { getMainDefinition } from "@apollo/client/utilities";
+
+const httpLink = new createHttpLink({
   uri: process.env.REACT_APP_API_URL,
+});
+
+const wsLink = new WebSocketLink({
+  uri: process.env.REACT_APP_WEBSOCKET_LINK,
+  options: {
+    reconnect: true,
+    connectionParams: {
+      authToken: localStorage.getItem("jwt"),
+    },
+  },
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -23,8 +37,20 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  authLink.concat(httpLink)
+);
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: splitLink,
   cache: new InMemoryCache(),
 });
 

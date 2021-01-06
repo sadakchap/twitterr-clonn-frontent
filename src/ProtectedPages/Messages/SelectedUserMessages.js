@@ -41,14 +41,7 @@ const SelectedUserMessages = () => {
   ] = useLazyQuery(FETCH_MESSAGES_FROM);
 
   const [sendMessage] = useMutation(SEND_MESSAGE_MUTATION, {
-    onCompleted: (result) => {
-      dispatch({
-        type: "ADD_MESSAGE",
-        payload: {
-          username: selectedUser.username,
-          message: result.sendMessage,
-        },
-      });
+    onCompleted: (_) => {
       setMsgContent("");
     },
     onError: (err) => console.log(err),

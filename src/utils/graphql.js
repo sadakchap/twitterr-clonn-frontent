@@ -24,7 +24,7 @@ export const filterUsers = async (token, text) => {
     });
     return await res.json();
   } catch (err) {
-    return console.log(err);
+    return err;
   }
 };
 

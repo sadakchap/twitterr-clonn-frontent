@@ -41,12 +41,18 @@ const TweetEditor = (props) => {
 
   const onSearchChange = ({ value }) => {
     filterUsers(user.token, value).then((res) => {
-      const mentionData = res.data.getUsers.map((user) => ({
-        username: user.username,
-        name: user.name,
-        link: `/${user.username}`,
-        avatar: user.profile_pic,
-      }));
+      if (res.errors) {
+        console.log(res.errors);
+        return;
+      }
+      const mentionData =
+        res.data.getUsers &&
+        res.data.getUsers.map((user) => ({
+          username: user.username,
+          name: user.name,
+          link: `/${user.username}`,
+          avatar: user.profile_pic,
+        }));
       setSuggestions(mentionData);
     });
   };

@@ -92,7 +92,11 @@ const SelectedUserMessages = () => {
       <Grid
         container
         direction="column-reverse"
-        style={{ height: "calc(100vh - 68px)", flexWrap: "nowrap" }}
+        style={{
+          height: "calc(100vh - 68px)",
+          flexWrap: "nowrap",
+          overflowY: "auto",
+        }}
       >
         {!selectedUser && "No chat selected!"}
         {loading && <Spinner />}

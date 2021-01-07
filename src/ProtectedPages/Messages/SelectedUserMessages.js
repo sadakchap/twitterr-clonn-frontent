@@ -93,7 +93,11 @@ const SelectedUserMessages = () => {
         direction="column-reverse"
         className={classes.messagesDiv}
       >
-        {!selectedUser && "No chat selected!"}
+        {!selectedUser && (
+          <Typography align="center" variant="caption" color="textSecondary">
+            Select a friend!
+          </Typography>
+        )}
         {loading && <Spinner />}
 
         {selectedUser &&

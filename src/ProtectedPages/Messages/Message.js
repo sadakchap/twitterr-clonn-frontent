@@ -2,6 +2,7 @@ import { makeStyles, Tooltip, Typography } from "@material-ui/core";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
 import moment from "moment";
+import Reactions from "./Reactions";
 
 const useStyles = makeStyles((theme) => ({
   root: (props) => ({
@@ -36,16 +37,22 @@ const Message = ({ message }) => {
 
   return (
     <div className={classes.root}>
-      <Tooltip
-        title={moment(new Date(message.createdAt)).format("MMM DD, hh:mm:s a")}
-        arrow
-        placement={sent ? "left" : "right"}
-        classes={toolTipClasses}
-      >
-        <Typography className={classes.msgText} variant="body2">
-          {message.content}
-        </Typography>
-      </Tooltip>
+      <div className="" style={{ display: "flex", alignItems: "center" }}>
+        {sent && <Reactions message={message} />}
+        <Tooltip
+          title={moment(new Date(message.createdAt)).format(
+            "MMM DD, hh:mm:s a"
+          )}
+          arrow
+          placement={sent ? "left" : "right"}
+          classes={toolTipClasses}
+        >
+          <Typography className={classes.msgText} variant="body2">
+            {message.content}
+          </Typography>
+        </Tooltip>
+        {!sent && <Reactions message={message} />}
+      </div>
     </div>
   );
 };

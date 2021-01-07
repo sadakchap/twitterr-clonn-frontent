@@ -27,6 +27,10 @@ const Messages = () => {
     NEW_MESSAGE_SUBSCRIPTION
   );
 
+  const { data: reactionData, error: reactionError } = useSubscription(
+    NEW_REACTION_SUBSCRIPTION
+  );
+
   useEffect(() => {
     if (messageError) {
       console.log(messageError);
@@ -45,6 +49,25 @@ const Messages = () => {
     }
     // eslint-disable-next-line
   }, [messageData, messageError]);
+
+  useEffect(() => {
+    if (reactionError) {
+      console.log(reactionError);
+    }
+    if (reactionData) {
+      const message = reactionData.newReaction.message;
+      const otherUser =
+        message.to === user.username ? message.from : message.to;
+      messageDispatch({
+        type: "NEW_REACTION",
+        payload: {
+          username: otherUser,
+          reaction: reactionData.newReaction,
+        },
+      });
+    }
+    // eslint-disable-next-line
+  }, [reactionData, reactionError]);
 
   return (
     <Base>
@@ -72,6 +95,21 @@ const NEW_MESSAGE_SUBSCRIPTION = gql`
       from
       to
       createdAt
+    }
+  }
+`;
+
+const NEW_REACTION_SUBSCRIPTION = gql`
+  subscription newReaction {
+    newReaction {
+      id
+      content
+      createdAt
+      message {
+        id
+        to
+        from
+      }
     }
   }
 `;

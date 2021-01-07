@@ -1,6 +1,7 @@
 import { IconButton, makeStyles, Popover } from "@material-ui/core";
 import SentimentSatisfiedOutlinedIcon from "@material-ui/icons/SentimentSatisfiedOutlined";
 import { useState } from "react";
+import { gql, useMutation } from "@apollo/client";
 
 const useStyles = makeStyles((theme) => ({
   popover: {
@@ -35,6 +36,14 @@ const Reactions = ({ message }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const [sendReaction] = useMutation(SEND_REACTION_MUTATION, {
+    onCompleted: (data) => {
+      console.log(data);
+      handleClose();
+    },
+    onError: (err) => console.log(err),
+  });
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -45,7 +54,7 @@ const Reactions = ({ message }) => {
 
   const handleReactionClick = (reaction) => {
     console.log(`Reacting ${reaction} to message ${message.id}`);
-    handleClose();
+    sendReaction({ variables: { messageId: message.id, content: reaction } });
   };
 
   const open = Boolean(anchorEl);
@@ -90,3 +99,13 @@ const Reactions = ({ message }) => {
 };
 
 export default Reactions;
+
+const SEND_REACTION_MUTATION = gql`
+  mutation($messageId: ID!, $content: String!) {
+    reactToMessage(messageId: $messageId, content: $content) {
+      id
+      content
+      createdAt
+    }
+  }
+`;

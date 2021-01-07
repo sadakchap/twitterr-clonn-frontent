@@ -7,11 +7,17 @@ import Message from "./Message";
 import SendIcon from "@material-ui/icons/Send";
 
 const useStyles = makeStyles((theme) => ({
+  messagesDiv: {
+    height: "calc(100vh - 56px)",
+    flexWrap: "nowrap",
+    overflowY: "auto",
+    paddingBottom: `${theme.spacing(1)}px`,
+  },
   form: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    margin: `${theme.spacing(1)}px`,
+    margin: `0 0 ${theme.spacing(1)}px ${theme.spacing(1)}px`,
     gap: `${theme.spacing(1)}px`,
   },
   input: {
@@ -85,11 +91,7 @@ const SelectedUserMessages = () => {
       <Grid
         container
         direction="column-reverse"
-        style={{
-          height: "calc(100vh - 68px)",
-          flexWrap: "nowrap",
-          overflowY: "auto",
-        }}
+        className={classes.messagesDiv}
       >
         {!selectedUser && "No chat selected!"}
         {loading && <Spinner />}

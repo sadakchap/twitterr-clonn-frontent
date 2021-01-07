@@ -1,4 +1,4 @@
-import { makeStyles, Typography } from "@material-ui/core";
+import { Link, makeStyles, Typography } from "@material-ui/core";
 import LocationOnOutlinedIcon from "@material-ui/icons/LocationOnOutlined";
 import LinkOutlinedIcon from "@material-ui/icons/LinkOutlined";
 import EventNoteOutlinedIcon from "@material-ui/icons/EventNoteOutlined";
@@ -39,14 +39,9 @@ const UserExtraInfo = (props) => {
       {website && (
         <div className={classes.extraInfoDiv}>
           <LinkOutlinedIcon fontSize="small" color="disabled" />
-          <Typography
-            variant="caption"
-            color="primary"
-            component="a"
-            target="_blank"
-          >
+          <Link href={website} variant="caption" target="_blank">
             {website}
-          </Typography>
+          </Link>
         </div>
       )}
       {dob && (

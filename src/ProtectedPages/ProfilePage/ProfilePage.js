@@ -172,19 +172,23 @@ const ProfilePage = () => {
                 >
                   My Tweets
                 </Typography>
-                {getUser.posts &&
-                  getUser.posts.map((tweet) => (
-                    <Tweet
-                      key={tweet.id}
-                      tweet={{
-                        ...tweet,
-                        author: {
-                          name: getUser.name,
-                          profile_pic: getUser.profile_pic,
-                        },
-                      }}
-                    />
-                  ))}
+                <div
+                  style={{ display: "flex", flexDirection: "column-reverse" }}
+                >
+                  {getUser.posts &&
+                    getUser.posts.map((tweet) => (
+                      <Tweet
+                        key={tweet.id}
+                        tweet={{
+                          ...tweet,
+                          author: {
+                            name: getUser.name,
+                            profile_pic: getUser.profile_pic,
+                          },
+                        }}
+                      />
+                    ))}
+                </div>
               </div>
             </div>
           )}

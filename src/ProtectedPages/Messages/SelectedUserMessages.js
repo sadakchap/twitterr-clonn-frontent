@@ -136,6 +136,10 @@ const FETCH_MESSAGES_FROM = gql`
       to
       from
       createdAt
+      reactions {
+        id
+        content
+      }
     }
   }
 `;

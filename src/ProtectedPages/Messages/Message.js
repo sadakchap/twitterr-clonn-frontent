@@ -1,4 +1,4 @@
-import { makeStyles, Tooltip, Typography } from "@material-ui/core";
+import { makeStyles, Paper, Tooltip, Typography } from "@material-ui/core";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
 import moment from "moment";
@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: props.sent ? "flex-end" : "flex-start",
   }),
   msgText: (props) => ({
+    position: "relative",
     padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     margin: `${theme.spacing(1)}px`,
     borderRadius: "1.5rem",
@@ -17,6 +18,18 @@ const useStyles = makeStyles((theme) => ({
       ? `${theme.palette.primary.main}`
       : `${theme.palette.background.paper}`,
   }),
+  reactionPaper: {
+    position: "absolute",
+    right: "5px",
+    bottom: "-5px",
+    borderRadius: "1.5rem",
+    padding: `1px 4px`,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: "0.8rem",
+    border: `1px solid ${theme.palette.grey[700]}`,
+  },
 }));
 
 const useStylesBootstrap = makeStyles((theme) => ({
@@ -34,23 +47,35 @@ const Message = ({ message }) => {
   const sent = user.username === message.from;
   const classes = useStyles({ sent });
   const toolTipClasses = useStylesBootstrap();
+  const msgReactions = [...new Set(message.reactions.map((r) => r.content))];
 
   return (
     <div className={classes.root}>
       <div className="" style={{ display: "flex", alignItems: "center" }}>
         {sent && <Reactions message={message} />}
-        <Tooltip
-          title={moment(new Date(message.createdAt)).format(
-            "MMM DD, hh:mm:s a"
+        <div style={{ position: "relative" }}>
+          <Tooltip
+            title={moment(new Date(message.createdAt)).format(
+              "MMM DD, hh:mm:s a"
+            )}
+            arrow
+            placement={sent ? "left" : "right"}
+            classes={toolTipClasses}
+          >
+            <Typography className={classes.msgText} variant="body2">
+              {message.content}
+            </Typography>
+          </Tooltip>
+          {message.reactions.length > 0 && (
+            <Paper className={classes.reactionPaper}>
+              {msgReactions}{" "}
+              <div style={{ fontWeight: 700, marginLeft: "3px" }}>
+                {msgReactions.length}
+              </div>
+            </Paper>
           )}
-          arrow
-          placement={sent ? "left" : "right"}
-          classes={toolTipClasses}
-        >
-          <Typography className={classes.msgText} variant="body2">
-            {message.content}
-          </Typography>
-        </Tooltip>
+        </div>
+
         {!sent && <Reactions message={message} />}
       </div>
     </div>

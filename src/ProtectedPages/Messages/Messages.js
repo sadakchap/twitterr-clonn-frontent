@@ -73,10 +73,10 @@ const Messages = () => {
     <Base>
       {(_) => (
         <Grid container className={classes.root}>
-          <Grid item xs={12} sm={5} md={4}>
+          <Grid item xs={12} sm={2} md={4}>
             <Users />
           </Grid>
-          <Grid item xs={12} sm={7} md={8}>
+          <Grid item xs={12} sm={10} md={8}>
             <SelectedUserMessages />
           </Grid>
         </Grid>

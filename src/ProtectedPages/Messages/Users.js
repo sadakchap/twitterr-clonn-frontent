@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import {
   Avatar,
+  Hidden,
   List,
   ListItem,
   ListItemAvatar,
@@ -26,6 +27,10 @@ const useStyles = makeStyles((theme) => ({
   },
   borderBottom: {
     borderBottom: `1px solid ${theme.palette.grey[700]}`,
+  },
+  centerItems: {
+    display: "flex",
+    justifyContent: "center",
   },
 }));
 
@@ -55,7 +60,7 @@ const Users = () => {
                 button
                 key={user.id}
                 selected={!!user.selected}
-                className={classes.borderBottom}
+                className={`${classes.borderBottom} ${classes.centerItems}`}
                 onClick={() =>
                   dispatch({
                     type: "SET_SELECTED_USER",
@@ -63,28 +68,30 @@ const Users = () => {
                   })
                 }
               >
-                <ListItemAvatar>
+                <ListItemAvatar className={classes.centerItems}>
                   <Avatar src={user.profile_pic} />
                 </ListItemAvatar>
-                <ListItemText>
-                  <Typography variant="subtitle2" component="span">
-                    {user.name}{" "}
+                <Hidden only="sm">
+                  <ListItemText>
+                    <Typography variant="subtitle2" component="span">
+                      {user.name}{" "}
+                      <Typography
+                        variant="caption"
+                        component="span"
+                        color="textSecondary"
+                      >{`@${user.username}`}</Typography>
+                    </Typography>
                     <Typography
                       variant="caption"
-                      component="span"
+                      component="p"
                       color="textSecondary"
-                    >{`@${user.username}`}</Typography>
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    component="p"
-                    color="textSecondary"
-                  >
-                    {user.lastMessage.content
-                      ? user.lastMessage.content
-                      : "You are connected now!"}
-                  </Typography>
-                </ListItemText>
+                    >
+                      {user.lastMessage.content
+                        ? user.lastMessage.content
+                        : "You are connected now!"}
+                    </Typography>
+                  </ListItemText>
+                </Hidden>
               </ListItem>
             ))}
           </List>

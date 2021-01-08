@@ -108,8 +108,8 @@ const SelectedUserMessages = () => {
         {selectedUser &&
           selectedUser.messages &&
           selectedUser.messages.length === 0 && (
-            <Typography align="center">
-              You are connected now! send a wave!
+            <Typography align="center" variant="caption" color="textSecondary">
+              You are connected now! Start by saying Hi!
             </Typography>
           )}
       </Grid>

@@ -86,7 +86,7 @@ const Users = () => {
                       component="p"
                       color="textSecondary"
                     >
-                      {user.lastMessage.content
+                      {user.lastMessage
                         ? user.lastMessage.content
                         : "You are connected now!"}
                     </Typography>

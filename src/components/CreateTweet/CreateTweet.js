@@ -59,16 +59,26 @@ const CreateTweet = ({ showAsModal = false }) => {
       setEditorState(EditorState.createEmpty());
       showAsModal && history.push("/home");
     },
-    variables: {
-      body: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-    },
   });
 
   const handleSubmitBtn = (e) => {
     e.preventDefault();
+    const rawData = convertToRaw(editorState.getCurrentContent());
+    const mentionedUsers = [];
+    for (const key in rawData.entityMap) {
+      const ent = rawData.entityMap[key];
+      if (ent.type === "mention") {
+        mentionedUsers.push(ent.data.mention.username);
+      }
+    }
+    console.log(mentionedUsers);
 
     if (editorState.getCurrentContent().hasText()) {
-      createTweet();
+      createTweet({
+        variables: {
+          body: JSON.stringify(rawData),
+        },
+      });
     }
   };
 

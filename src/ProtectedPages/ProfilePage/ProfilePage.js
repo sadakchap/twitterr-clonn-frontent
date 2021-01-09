@@ -11,8 +11,7 @@ import ExploreSection from "../../components/ExploreSection/ExploreSection";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import UserExtraInfo from "./UserExtraInfo";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/auth";
+import { useAuthState } from "../../contexts/auth";
 import { FETCH_USER_QUERY } from "../../utils/graphql";
 import ArrowBackOutlinedIcon from "@material-ui/icons/ArrowBackOutlined";
 import Tweet from "../../components/Tweet/Tweet";
@@ -82,7 +81,9 @@ const useStyles = makeStyles((theme) => ({
 const ProfilePage = () => {
   const classes = useStyles();
   const { username } = useParams();
-  const { user } = useContext(AuthContext);
+  const {
+    user: { data: authUserData },
+  } = useAuthState();
   const location = useLocation();
   const history = useHistory();
 
@@ -94,7 +95,7 @@ const ProfilePage = () => {
 
   return (
     <Base>
-      {(handleDrawerToggle) => (
+      {(_) => (
         <div className={classes.root}>
           {loading ? (
             <CircularProgress />
@@ -115,7 +116,7 @@ const ProfilePage = () => {
               </div>
               <div className={classes.imageSection}>
                 <Avatar src={getUser.profile_pic} className={classes.avatar} />
-                {user.id === getUser.id && (
+                {authUserData.id === getUser.id && (
                   <Button
                     variant="outlined"
                     color="primary"

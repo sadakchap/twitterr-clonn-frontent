@@ -11,8 +11,7 @@ import {
 import Tweet from "../../components/Tweet/Tweet";
 import { FETCH_TWEETS_QUERY } from "../../utils/graphql";
 import ExploreSection from "../../components/ExploreSection/ExploreSection";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/auth";
+import { useAuthState } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,9 +49,15 @@ const useStyles = makeStyles((theme) => ({
 const Feed = () => {
   const classes = useStyles();
   const { data: { getPosts } = {}, loading } = useQuery(FETCH_TWEETS_QUERY);
-  const { user } = useContext(AuthContext);
+  const {
+    user: { data: authUserData },
+    loading: userLoading,
+    authenticated,
+  } = useAuthState();
 
-  return (
+  return userLoading ? (
+    <>"Loading..."</>
+  ) : authenticated ? (
     <Base>
       {(handleDrawerToggle) => (
         <div className={classes.root}>
@@ -60,7 +65,7 @@ const Feed = () => {
             <div className={classes.header}>
               <Hidden smUp>
                 <Avatar
-                  src={user.profile_pic}
+                  src={authUserData.profile_pic}
                   className={classes.headerAvatar}
                   onClick={handleDrawerToggle}
                 />
@@ -89,6 +94,8 @@ const Feed = () => {
         </div>
       )}
     </Base>
+  ) : (
+    <>Not authenticated</>
   );
 };
 

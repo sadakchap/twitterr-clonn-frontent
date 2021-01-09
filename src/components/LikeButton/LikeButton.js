@@ -1,7 +1,7 @@
 import { useMutation, gql } from "@apollo/client";
 import { Button, makeStyles } from "@material-ui/core";
-import { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../../contexts/auth";
+import { useEffect, useState } from "react";
+import { useAuthState } from "../../contexts/auth";
 import "./likeButton.css";
 import LikeIcon from "./LikeIcon";
 
@@ -16,7 +16,10 @@ const useStyles = makeStyles(() => ({
 const LikeButton = (props) => {
   const classes = useStyles();
 
-  const { user } = useContext(AuthContext);
+  const {
+    user: { data: authUserData },
+    authenticated,
+  } = useAuthState();
   const [liked, setLiked] = useState(false);
   const {
     tweet: { id, likes, likesCount },
@@ -25,7 +28,7 @@ const LikeButton = (props) => {
   const [toggleLike] = useMutation(TOGGLE_LIKE_MUTATION);
 
   const handleClick = () => {
-    if (!user) {
+    if (!authenticated) {
       return props.history.push("/login");
     }
     toggleLike({
@@ -36,9 +39,9 @@ const LikeButton = (props) => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (authenticated) {
       const likeIdx = likes.findIndex(
-        (like) => like.username === user.username
+        (like) => like.username === authUserData.username
       );
 
       if (likeIdx > -1) {
@@ -47,7 +50,7 @@ const LikeButton = (props) => {
         setLiked(false);
       }
     }
-  }, [user, likes]);
+  }, [authUserData, authenticated, likes]);
 
   return (
     <Button

@@ -1,9 +1,9 @@
 import { Button, Grid, Grow, makeStyles, Typography } from "@material-ui/core";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import moment from "moment";
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
-import { AuthContext } from "../../contexts/auth";
+import { useAuthState } from "../../contexts/auth";
 import { gql, useMutation } from "@apollo/client";
 import { FETCH_TWEETS_QUERY } from "../../utils/graphql";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
@@ -58,7 +58,10 @@ const useStyles = makeStyles((theme) => ({
 
 const TweetHeader = (props) => {
   const classes = useStyles();
-  const { user } = useContext(AuthContext);
+  const {
+    authenticated,
+    user: { data: authUserData },
+  } = useAuthState();
   const [openDropDown, setOpenDropDown] = useState(false);
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, setOpenDropDown);
@@ -96,7 +99,7 @@ const TweetHeader = (props) => {
             @{username} &#183; {moment(parseInt(createdAt)).fromNow(true)}
           </Typography>
         </Grid>
-        {user && user.username === username && (
+        {authenticated && authUserData.username === username && (
           <Grid item>
             <div className={classes.moreIconDiv} ref={wrapperRef}>
               <MoreHorizIcon

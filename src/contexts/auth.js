@@ -1,70 +1,158 @@
-import { createContext, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 import jwtDecode from "jwt-decode";
+import { gql, useLazyQuery } from "@apollo/client";
 
-const initialState = {
-  user: null,
+let initialState = {
+  authenticated: false,
+  user: {
+    credentials: null,
+    data: null,
+  },
+  loading: false,
 };
 
-if (localStorage.getItem("jwt")) {
-  const decodedToken = jwtDecode(localStorage.getItem("jwt"));
-  if (decodedToken.exp * 1000 < Date.now()) {
-    localStorage.removeItem("jwt");
-  } else {
-    initialState.user = { ...decodedToken, token: localStorage.getItem("jwt") };
-  }
-}
+const token = localStorage.getItem("jwt");
+if (token) {
+  const decodedToken = jwtDecode(token);
+  const expiresAt = new Date(decodedToken.exp * 1000);
 
-export const AuthContext = createContext({
-  user: null,
-  login: (userData) => {},
-  logout: () => {},
-});
-// userData: {username: "", id: "", token: ""}
+  if (new Date() > expiresAt) {
+    localStorage.removeItem("token");
+  } else {
+    initialState = {
+      authenticated: true,
+      user: {
+        credentials: { token: token },
+        data: decodedToken,
+      },
+    };
+  }
+} else console.log("No token found");
+
+const GET_USER_QUERY = gql`
+  query($username: String!) {
+    getUser(username: $username) {
+      id
+      username
+      name
+      profile_pic
+      unreadNotifications
+      notifications {
+        id
+        link
+        read
+        verb
+        message
+      }
+      website
+      location
+      createdAt
+    }
+  }
+`;
+
+const AuthStateContext = createContext();
+const AuthDispatchContext = createContext();
 
 const authReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
-      return { ...state, user: action.payload };
+      localStorage.setItem("jwt", action.payload.token);
+      return {
+        ...state,
+        authenticated: true,
+        user: { ...state.user, credentials: action.payload },
+      };
     case "LOGOUT":
-      return { ...state, user: null };
-    case "UPDATE_DATA":
-      return { ...state, user: { ...state.user, ...action.payload } };
+      console.log("removing token");
+      localStorage.removeItem("jwt");
+      return initialState;
+
+    case "SET_USER":
+      return {
+        ...state,
+        user: { ...state.user, data: action.payload },
+      };
+    case "UPDATE_USER":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          data: { ...state.user.data, ...action.payload },
+        },
+      };
+    case "SET_LOADING":
+      return {
+        ...state,
+        loading: action.payload,
+      };
+
     default:
-      return state;
+      break;
   }
+  // LOGIN, LOGOUT, SET_USER, SET_LOADING
 };
 
 const AuthContextProvider = (props) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const login = (userData) => {
-    localStorage.setItem("jwt", userData.token);
-    dispatch({
-      type: "LOGIN",
-      payload: userData,
-    });
-  };
+  const [getUserData] = useLazyQuery(GET_USER_QUERY, {
+    onCompleted: (data) => {
+      dispatch({ type: "SET_USER", payload: data.getUser });
+      dispatch({ type: "SET_LOADING", payload: false });
+    },
+    onError: (err) => {
+      console.log(err);
+      dispatch({ type: "LOGOUT" });
+      window.location.href = "/login";
+    },
+  });
 
-  const logout = () => {
-    localStorage.removeItem("jwt");
-    dispatch({
-      type: "LOGOUT",
-    });
-    window.location.href = "/login";
-  };
-
-  const updateState = (userData) => {
-    dispatch({
-      type: "UPDATE_DATA",
-      payload: userData,
-    });
-  };
+  useEffect(() => {
+    if (
+      state.authenticated &&
+      Object.prototype.hasOwnProperty.call(state.user.data, "exp")
+    ) {
+      getUserData({ variables: { username: state.user.data.username } });
+    }
+    // eslint-disable-next-line
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout, updateState }}>
-      {props.children}
-    </AuthContext.Provider>
+    <AuthDispatchContext.Provider value={dispatch}>
+      <AuthStateContext.Provider value={state}>
+        {props.children}
+      </AuthStateContext.Provider>
+    </AuthDispatchContext.Provider>
   );
 };
 
 export default AuthContextProvider;
+
+export const useAuthState = () => useContext(AuthStateContext);
+export const useAuthDispatch = () => useContext(AuthDispatchContext);
+
+/*
+  state: {
+    authenticated: false,
+    user: {
+      credentials: {
+        token
+      }
+      data: {
+        id: ""
+        username: ""
+        name: ""
+        profile_pic: ""
+        unreadNotifications: 0
+        notifications: [{}]
+        bio: ""
+        location: ""
+        website: ""
+        dob: ""
+        createdAt: ""
+      }
+    }
+    loading: false
+  }
+*/

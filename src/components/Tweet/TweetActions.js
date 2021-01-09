@@ -1,9 +1,8 @@
 import { Button, CardActions, makeStyles } from "@material-ui/core";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import LoopIcon from "@material-ui/icons/Loop";
-import { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AuthContext } from "../../contexts/auth";
+import { useAuthState } from "../../contexts/auth";
 import LikeButton from "../LikeButton/LikeButton";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
 import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
@@ -25,11 +24,16 @@ const TweetActions = (props) => {
     tweet: { id, likes, likesCount, comments, commentsCount },
     viewTweet = true,
   } = props;
-  const { user } = useContext(AuthContext);
+  const {
+    authenticated,
+    user: { data: authUserData },
+  } = useAuthState();
 
-  const userCommentExists = !user
+  const userCommentExists = !authenticated
     ? false
-    : comments.findIndex((comment) => comment.username === user.username) > -1;
+    : comments.findIndex(
+        (comment) => comment.username === authUserData.username
+      ) > -1;
 
   return (
     <CardActions className={classes.root}>

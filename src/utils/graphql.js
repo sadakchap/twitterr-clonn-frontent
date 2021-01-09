@@ -62,7 +62,6 @@ export const FETCH_USER_QUERY = gql`
       id
       username
       name
-      email
       bio
       profile_pic
       postsCount

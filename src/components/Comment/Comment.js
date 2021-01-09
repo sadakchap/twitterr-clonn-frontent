@@ -6,8 +6,7 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/auth";
+import { useAuthState } from "../../contexts/auth";
 import DisplayTweetMsg from "../Tweet/DisplayTweetMsg";
 import moment from "moment";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
@@ -41,7 +40,9 @@ const Comment = (props) => {
   } = props;
 
   const classes = useStyles();
-  const { user } = useContext(AuthContext);
+  const {
+    user: { data: authUserData },
+  } = useAuthState();
 
   const [deleteComment, { loading }] = useMutation(DELETE_COMMENT_MUTATION, {
     onError: (err) => {},
@@ -71,7 +72,7 @@ const Comment = (props) => {
               </Typography>
             </Grid>
             <Grid item>
-              {user && user.username === username && (
+              {authUserData && authUserData.username === username && (
                 <IconButton
                   size="small"
                   color="secondary"

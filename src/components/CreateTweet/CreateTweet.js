@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Avatar, CircularProgress, makeStyles } from "@material-ui/core";
 import { EditorState, convertToRaw } from "draft-js";
 import { gql, useMutation } from "@apollo/client";
@@ -6,7 +6,7 @@ import TweetEditor from "../TweetEditor/TweetEditor";
 import MyButton from "../MyButton/MyButton";
 import { FETCH_TWEETS_QUERY } from "../../utils/graphql";
 import { useHistory } from "react-router-dom";
-import { AuthContext } from "../../contexts/auth";
+import { useAuthState } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,7 +42,9 @@ const CreateTweet = ({ showAsModal = false }) => {
     EditorState.createEmpty()
   );
   const history = useHistory();
-  const { user } = useContext(AuthContext);
+  const {
+    user: { data: authUserData },
+  } = useAuthState();
 
   const [createTweet, { loading }] = useMutation(CREATE_TWEET_MUTATION, {
     update: (proxy, result) => {
@@ -93,7 +95,7 @@ const CreateTweet = ({ showAsModal = false }) => {
       ) : (
         <>
           <div className={classes.profilePicSection}>
-            <Avatar src={user.profile_pic} />
+            <Avatar src={authUserData.profile_pic} />
           </div>
           <div className={classes.tweetFormSection}>
             <TweetEditor

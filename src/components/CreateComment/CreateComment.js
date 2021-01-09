@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Avatar, CircularProgress, makeStyles, Paper } from "@material-ui/core";
 import { EditorState, convertToRaw } from "draft-js";
 import { gql, useMutation } from "@apollo/client";
 import TweetEditor from "../TweetEditor/TweetEditor";
 import MyButton from "../MyButton/MyButton";
-import { AuthContext } from "../../contexts/auth";
+import { useAuthState } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +35,9 @@ const CreateComment = ({ postId, setRedirectUser = (f) => f }) => {
     EditorState.createEmpty()
   );
 
-  const { user } = useContext(AuthContext);
+  const {
+    user: { data: authUserData },
+  } = useAuthState();
 
   const [createComment, { loading }] = useMutation(CREATE_COMMENT_MUTATION, {
     update: (_, __) => {
@@ -60,7 +62,7 @@ const CreateComment = ({ postId, setRedirectUser = (f) => f }) => {
       ) : (
         <>
           <div className={classes.profilePicSection}>
-            <Avatar src={user.profile_pic} />
+            <Avatar src={authUserData.profile_pic} />
           </div>
           <div className={classes.tweetFormSection}>
             <TweetEditor

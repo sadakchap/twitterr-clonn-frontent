@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useLazyQuery } from "@apollo/client";
 import {
   Button,
   CircularProgress,
@@ -9,8 +9,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import TwitterIcon from "@material-ui/icons/Twitter";
-import { useContext, useState } from "react";
-import { AuthContext } from "../../contexts/auth";
+import { useState } from "react";
+import { useAuthDispatch, useAuthState } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,9 +46,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = (props) => {
+const Login = () => {
   const classes = useStyles();
-  const { login } = useContext(AuthContext);
+  const dispatch = useAuthDispatch();
+  const { loading } = useAuthState();
+
   const [values, setValues] = useState({
     username: "",
     password: "",
@@ -59,18 +61,19 @@ const Login = (props) => {
   const handleChange = (name) => (e) =>
     setValues({ ...values, [name]: e.target.value });
 
-  const [loginUser, { loading }] = useMutation(LOGIN_USER_QUERY, {
-    update(_, result) {
-      login(result.data.login);
-      setValues({
-        ...values,
-        username: "",
-        password: "",
+  const [loginUser] = useLazyQuery(LOGIN_USER_QUERY, {
+    onCompleted: (data) => {
+      console.log("ok??");
+      dispatch({
+        type: "LOGIN",
+        payload: { token: data.login.token },
       });
+
+      dispatch({ type: "SET_LOADING", payload: false });
       window.location.href = "/home";
     },
-    onError(err) {
-      // console.log(err.graphQLErrors[0].extensions.exception.errors);
+    onError: (err) => {
+      dispatch({ type: "SET_LOADING", payload: false });
       setValues({
         ...values,
         error:
@@ -78,7 +81,6 @@ const Login = (props) => {
       });
       setOpenSnackBar(true);
     },
-    variables: values,
   });
 
   const handleSubmit = (e) => {
@@ -87,7 +89,9 @@ const Login = (props) => {
       console.log("Errors");
       return;
     }
-    loginUser();
+    setValues({ ...values, error: "" });
+    dispatch({ type: "SET_LOADING", payload: true });
+    loginUser({ variables: values });
   };
 
   const { username, password, error } = values;
@@ -167,13 +171,12 @@ const Login = (props) => {
 export default Login;
 
 const LOGIN_USER_QUERY = gql`
-  mutation login($username: String!, $password: String!) {
+  query login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       id
-      name
-      username
       token
-      profile_pic
+      username
+      name
     }
   }
 `;

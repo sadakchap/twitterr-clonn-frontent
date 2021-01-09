@@ -1,6 +1,6 @@
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import { AuthContext } from "../../contexts/auth";
+import { useAuthState } from "../../contexts/auth";
 import { filterUsers } from "../../utils/graphql";
 
 import Editor from "draft-js-plugins-editor";
@@ -31,7 +31,11 @@ const useStyles = makeStyles((theme) => ({
 
 const TweetEditor = (props) => {
   const classes = useStyles();
-  const { user } = useContext(AuthContext);
+  const {
+    user: {
+      credentials: { token },
+    },
+  } = useAuthState();
   const { editorState, setEditorState, placeHolderText } = props;
 
   const [suggestions, setSuggestions] = useState([]);
@@ -40,7 +44,7 @@ const TweetEditor = (props) => {
   const focus = () => editor.current.focus();
 
   const onSearchChange = ({ value }) => {
-    filterUsers(user.token, value).then((res) => {
+    filterUsers(token, value).then((res) => {
       if (res.errors) {
         console.log(res.errors);
         return;

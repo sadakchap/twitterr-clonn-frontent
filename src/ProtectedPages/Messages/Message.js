@@ -1,6 +1,5 @@
 import { makeStyles, Paper, Tooltip, Typography } from "@material-ui/core";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/auth";
+import { useAuthState } from "../../contexts/auth";
 import moment from "moment";
 import Reactions from "./Reactions";
 
@@ -42,9 +41,11 @@ const useStylesBootstrap = makeStyles((theme) => ({
 }));
 
 const Message = ({ message }) => {
-  const { user } = useContext(AuthContext);
+  const {
+    user: { data: authUserData },
+  } = useAuthState();
 
-  const sent = user.username === message.from;
+  const sent = authUserData.username === message.from;
   const classes = useStyles({ sent });
   const toolTipClasses = useStylesBootstrap();
   const msgReactions = [...new Set(message.reactions.map((r) => r.content))];

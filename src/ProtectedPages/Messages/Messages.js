@@ -3,9 +3,9 @@ import Base from "../../components/Base/Base";
 import Users from "./Users";
 import SelectedUserMessages from "./SelectedUserMessages";
 import { gql, useSubscription } from "@apollo/client";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useMessageDispatch } from "../../contexts/messages";
-import { AuthContext } from "../../contexts/auth";
+import { useAuthState } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +21,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Messages = () => {
   const classes = useStyles();
-  const { user } = useContext(AuthContext);
+  const {
+    user: { data: authUserData },
+  } = useAuthState();
   const messageDispatch = useMessageDispatch();
   const { data: messageData, error: messageError } = useSubscription(
     NEW_MESSAGE_SUBSCRIPTION
@@ -38,7 +40,7 @@ const Messages = () => {
     if (messageData) {
       const message = messageData.newMessage;
       const otherUser =
-        message.to === user.username ? message.from : message.to;
+        message.to === authUserData.username ? message.from : message.to;
       messageDispatch({
         type: "ADD_MESSAGE",
         payload: {
@@ -57,7 +59,7 @@ const Messages = () => {
     if (reactionData) {
       const message = reactionData.newReaction.message;
       const otherUser =
-        message.to === user.username ? message.from : message.to;
+        message.to === authUserData.username ? message.from : message.to;
       messageDispatch({
         type: "NEW_REACTION",
         payload: {

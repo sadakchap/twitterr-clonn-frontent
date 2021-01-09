@@ -44,6 +44,27 @@ const GET_USER_QUERY = gql`
         verb
         message
       }
+      dob
+      bio
+      posts {
+        id
+        body
+        username
+        createdAt
+        likesCount
+        commentsCount
+        likes {
+          id
+          username
+        }
+        comments {
+          id
+          body
+          username
+          createdAt
+          name
+        }
+      }
       website
       location
       createdAt
@@ -74,6 +95,8 @@ const authReducer = (state, action) => {
         user: { ...state.user, data: action.payload },
       };
     case "UPDATE_USER":
+      console.log("action triggered");
+      console.log(action.payload);
       return {
         ...state,
         user: {

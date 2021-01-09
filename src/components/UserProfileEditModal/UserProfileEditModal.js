@@ -74,7 +74,7 @@ const UserProfileEditModal = (props) => {
         </div>
 
         <div className={classes.modalBody}>
-          <ProfileEditForm user={props.location.state.data} />
+          <ProfileEditForm />
         </div>
       </div>
     </div>

@@ -9,12 +9,13 @@ import {
 } from "@material-ui/core";
 import ExploreSection from "../../components/ExploreSection/ExploreSection";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import UserExtraInfo from "./UserExtraInfo";
 import { useAuthState } from "../../contexts/auth";
 import { FETCH_USER_QUERY } from "../../utils/graphql";
 import ArrowBackOutlinedIcon from "@material-ui/icons/ArrowBackOutlined";
 import Tweet from "../../components/Tweet/Tweet";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,111 +88,116 @@ const ProfilePage = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const { loading, data: { getUser } = {} } = useQuery(FETCH_USER_QUERY, {
+  let [
+    fetchUserData,
+    { called, loading, data: { getUser } = {} },
+  ] = useLazyQuery(FETCH_USER_QUERY, {
     variables: {
       username,
     },
   });
 
+  if (authUserData.username === username) getUser = authUserData;
+
+  useEffect(() => {
+    if (authUserData.username !== username) fetchUserData();
+  }, [authUserData, username, fetchUserData]);
+
   return (
     <Base>
       {(_) => (
         <div className={classes.root}>
-          {loading ? (
+          {called && loading ? (
             <CircularProgress />
           ) : (
-            <div className={classes.content}>
-              <div className={classes.header}>
-                <IconButton color="primary" onClick={history.goBack}>
-                  <ArrowBackOutlinedIcon />
-                </IconButton>
-                <div className={classes.headerTitle}>
-                  <Typography variant="h6" component="h6">
-                    {getUser.name}
-                  </Typography>
-                  <Typography variant="caption" color="textSecondary">
-                    {getUser.postsCount} Tweets
-                  </Typography>
+            getUser && (
+              <div className={classes.content}>
+                <div className={classes.header}>
+                  <IconButton color="primary" onClick={history.goBack}>
+                    <ArrowBackOutlinedIcon />
+                  </IconButton>
+                  <div className={classes.headerTitle}>
+                    <Typography variant="h6" component="h6">
+                      {getUser.name}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {getUser.postsCount} Tweets
+                    </Typography>
+                  </div>
                 </div>
-              </div>
-              <div className={classes.imageSection}>
-                <Avatar src={getUser.profile_pic} className={classes.avatar} />
-                {authUserData.id === getUser.id && (
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    className={classes.editBtn}
-                    component={Link}
-                    to={{
-                      pathname: "/settings/profile",
-                      state: {
-                        background: location,
-                        data: {
-                          name: getUser.name,
-                          profile_pic: getUser.profile_pic,
-                          background_pic: getUser.background_pic,
-                          bio: getUser.bio,
-                          location: getUser.location,
-                          website: getUser.website,
-                          username: getUser.username,
+                <div className={classes.imageSection}>
+                  <Avatar
+                    src={getUser.profile_pic}
+                    className={classes.avatar}
+                  />
+                  {authUserData.id === getUser.id && (
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      className={classes.editBtn}
+                      component={Link}
+                      to={{
+                        pathname: "/settings/profile",
+                        state: {
+                          background: location,
                         },
-                      },
-                    }}
-                    data={getUser}
+                      }}
+                      data={getUser}
+                    >
+                      Edit Profile
+                    </Button>
+                  )}
+                </div>
+                <div className={classes.toolBar}></div>
+                <div className={classes.userInfo}>
+                  <Typography variant="h6">{getUser.name}</Typography>
+                  <Typography
+                    variant="caption"
+                    color="textSecondary"
+                    gutterBottom
                   >
-                    Edit Profile
-                  </Button>
-                )}
-              </div>
-              <div className={classes.toolBar}></div>
-              <div className={classes.userInfo}>
-                <Typography variant="h6">{getUser.name}</Typography>
-                <Typography
-                  variant="caption"
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  @{getUser.username}
-                </Typography>
-                <Typography variant="caption" component="div" gutterBottom>
-                  {getUser.bio}
-                </Typography>
-                {/* extra user info */}
-                <UserExtraInfo
-                  location={getUser.location}
-                  website={getUser.website}
-                  dob={getUser.dob}
-                  createdAt={getUser.createdAt}
-                />
-              </div>
-              {/* User activity tabs */}
-              <div className="">
-                <Typography
-                  variant="h6"
-                  component="div"
-                  className={classes.headingText}
-                >
-                  My Tweets
-                </Typography>
-                <div
-                  style={{ display: "flex", flexDirection: "column-reverse" }}
-                >
-                  {getUser.posts &&
-                    getUser.posts.map((tweet) => (
-                      <Tweet
-                        key={tweet.id}
-                        tweet={{
-                          ...tweet,
-                          author: {
-                            name: getUser.name,
-                            profile_pic: getUser.profile_pic,
-                          },
-                        }}
-                      />
-                    ))}
+                    @{getUser.username}
+                  </Typography>
+                  <Typography variant="caption" component="div" gutterBottom>
+                    {getUser.bio}
+                  </Typography>
+                  {/* extra user info */}
+                  <UserExtraInfo
+                    location={getUser.location}
+                    website={getUser.website}
+                    dob={getUser.dob}
+                    createdAt={getUser.createdAt}
+                  />
+                </div>
+                {/* User activity tabs */}
+                <div className="">
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    className={classes.headingText}
+                  >
+                    My Tweets
+                  </Typography>
+                  <div
+                    style={{ display: "flex", flexDirection: "column-reverse" }}
+                  >
+                    {getUser.posts &&
+                      getUser.posts.map((tweet) => (
+                        <Tweet
+                          key={tweet.id}
+                          tweet={{
+                            ...tweet,
+                            author: {
+                              name: getUser.name,
+                              profile_pic: getUser.profile_pic,
+                            },
+                          }}
+                        />
+                      ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )
           )}
           <div className={classes.exploreSection}>
             <ExploreSection />

@@ -1,11 +1,16 @@
-import { Button, IconButton, makeStyles, TextField } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  makeStyles,
+  TextField,
+} from "@material-ui/core";
 import { useEffect, useState } from "react";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { useMutation, gql } from "@apollo/client";
-import { FETCH_USER_QUERY } from "../../utils/graphql";
 import { useHistory } from "react-router-dom";
 import { storageRef } from "../../firebase/firebaseConfig";
-import { useAuthDispatch } from "../../contexts/auth";
+import { useAuthDispatch, useAuthState } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -44,19 +49,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProfileEditForm = (props) => {
+const ProfileEditForm = () => {
   const classes = useStyles();
+  const {
+    user: { data: authUserData },
+  } = useAuthState();
+  const authDispatch = useAuthDispatch();
   const [values, setValues] = useState({
-    name: props.user.name,
-    bio: props.user.bio,
-    location: props.user.location,
-    website: props.user.website,
-    profile_pic: props.user.profile_pic,
+    name: authUserData.name,
+    bio: authUserData.bio,
+    location: authUserData.location,
+    website: authUserData.website,
+    profile_pic: authUserData.profile_pic,
   });
   const [selectedFile, setSelectedFile] = useState("");
   const [previewImg, setPreviewImg] = useState("");
   const history = useHistory();
-  const authDispatch = useAuthDispatch;
 
   const handleChange = (name) => (e) =>
     setValues({ ...values, [name]: e.target.value });
@@ -84,21 +92,9 @@ const ProfileEditForm = (props) => {
   };
 
   const [updateUser, { loading }] = useMutation(UPDATE_PROFILE_MUTATION, {
-    update: (proxy, result) => {
-      const data = proxy.readQuery({
-        query: FETCH_USER_QUERY,
-        variables: {
-          username: props.user.username,
-        },
-      });
-      proxy.writeQuery({
-        query: FETCH_USER_QUERY,
-        data: {
-          getUser: { ...data.getUser, ...result.data.updateUser },
-        },
-      });
+    update: (_, result) => {
+      console.log(result.data.updateUser);
       authDispatch({ type: "UPDATE_USER", payload: result.data.updateUser });
-
       history.goBack();
     },
     onError: () => {},
@@ -223,7 +219,7 @@ const ProfileEditForm = (props) => {
           className={classes.saveBtn}
           disabled={loading}
         >
-          Save
+          {loading ? <CircularProgress /> : "Save"}
         </Button>
       </div>
     </form>

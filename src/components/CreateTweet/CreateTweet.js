@@ -61,6 +61,9 @@ const CreateTweet = ({ showAsModal = false }) => {
       setEditorState(EditorState.createEmpty());
       showAsModal && history.push("/home");
     },
+    onError: (err) => {
+      console.log(err);
+    },
   });
 
   const handleSubmitBtn = (e) => {

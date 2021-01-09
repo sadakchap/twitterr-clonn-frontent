@@ -51,13 +51,9 @@ const Feed = () => {
   const { data: { getPosts } = {}, loading } = useQuery(FETCH_TWEETS_QUERY);
   const {
     user: { data: authUserData },
-    loading: userLoading,
-    authenticated,
   } = useAuthState();
 
-  return userLoading ? (
-    <>"Loading..."</>
-  ) : authenticated ? (
+  return (
     <Base>
       {(handleDrawerToggle) => (
         <div className={classes.root}>
@@ -94,8 +90,6 @@ const Feed = () => {
         </div>
       )}
     </Base>
-  ) : (
-    <>Not authenticated</>
   );
 };
 

@@ -81,6 +81,7 @@ const SideMenu = (props) => {
   const {
     user: { data: authUserData },
     authenticated,
+    loading,
   } = useAuthState();
   const authDispatch = useAuthDispatch();
 
@@ -104,7 +105,7 @@ const SideMenu = (props) => {
             <Typography variant="h6">Home</Typography>
           </NavLink>
         </ListItem>
-        {authenticated ? (
+        {!loading && authenticated ? (
           <>
             <ListItem>
               <NavLink to="/notifications" className={classes.navLink}>

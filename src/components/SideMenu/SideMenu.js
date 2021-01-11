@@ -87,6 +87,8 @@ const SideMenu = (props) => {
   const handleLogout = (e) => {
     e.preventDefault();
     authDispatch({ type: "LOGOUT" });
+    if (typeof window !== "undefined") window.location.href = "/login";
+    history.push("/login");
     history.go(0);
   };
 

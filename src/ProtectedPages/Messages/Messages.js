@@ -4,7 +4,7 @@ import Users from "./Users";
 import SelectedUserMessages from "./SelectedUserMessages";
 import { gql, useSubscription } from "@apollo/client";
 import { useEffect } from "react";
-import { useMessageDispatch } from "../../contexts/messages";
+import { MessageProvider, useMessageDispatch } from "../../contexts/messages";
 import { useAuthState } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
@@ -74,14 +74,16 @@ const Messages = () => {
   return (
     <Base>
       {(_) => (
-        <Grid container className={classes.root}>
-          <Grid item xs={12} sm={2} md={4}>
-            <Users />
+        <MessageProvider>
+          <Grid container className={classes.root}>
+            <Grid item xs={12} sm={2} md={4}>
+              <Users />
+            </Grid>
+            <Grid item xs={12} sm={10} md={8}>
+              <SelectedUserMessages />
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={10} md={8}>
-            <SelectedUserMessages />
-          </Grid>
-        </Grid>
+        </MessageProvider>
       )}
     </Base>
   );

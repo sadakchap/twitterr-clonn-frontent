@@ -42,6 +42,7 @@ const Routes = () => {
 
       {background && (
         <>
+          <Route exact path="/i/flow/signup" component={Register} />
           <PrivateRoute path="/tweet/:type/:id" component={ShowTweetModal} />
           <PrivateRoute path="/compose/tweet" component={CreateTweetModal} />
           <PrivateRoute

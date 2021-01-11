@@ -1,151 +1,137 @@
-import { Backdrop, makeStyles } from "@material-ui/core";
-import TwitterIcon from "@material-ui/icons/Twitter";
+import { makeStyles } from "@material-ui/core";
+import { withRouter } from "react-router-dom";
 import { useState } from "react";
-import MyButton from "../../components/MyButton/MyButton";
-import { getNumberOfDays, validateEmail } from "../../utils/utils";
 import SignForm from "./SignForm";
+import { validateEmail } from "../../utils/utils";
+import Step2 from "./Step2";
+import ConfirmDetails from "./ConfirmDetails";
+import PasswordInput from "./PasswordInput";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    position: "absolute",
-    width: 600,
-    backgroundColor: theme.palette.background.default,
-    top: "50%",
-    left: "50%",
-    transform: `translate(-50%, -50%)`,
-    padding: theme.spacing(2),
-    borderRadius: `${theme.spacing(2)}px`,
-    height: `calc(100vh - 60px)`,
-  },
-  backdrop: {
-    backgroundColor: "#5b708366",
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
-  modalHeader: {
+  root: {
+    position: "fixed",
+    left: 0,
+    top: 0,
     width: "100%",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
+    height: "100vh",
+    zIndex: 999999,
+    backgroundColor: "#5b708366",
   },
-  modalForm: {
-    padding: `${theme.spacing(2)}px`,
+  modal: {
+    position: "relative",
+    top: "5%",
+    margin: "0 auto",
+    maxWidth: 600,
+    width: "100%",
+    backgroundColor: theme.palette.background.default,
+    minHeight: `calc(100vh - 60px)`,
+    borderRadius: "16px",
+    [theme.breakpoints.down("xs")]: {
+      top: 0,
+      width: "100%",
+      height: "100vh",
+    },
   },
 }));
 
-const Register = () => {
+const SignUpModal = (props) => {
   const classes = useStyles();
-  const [values, setValues] = useState({
-    step: 1,
+  const [step, setStep] = useState(1);
+  const [fields, setFields] = useState({
     name: "",
     email: "",
-    month: "",
-    day: "",
-    year: "",
-    code: "",
-    numberOfDays: 31,
+    password: "",
+    date: null,
+    currentFocus: "name",
   });
   const [errors, setErrors] = useState({});
 
-  const nextStep = () => setValues({ ...values, step: step + 1 });
-  const prevStep = () => setValues({ ...values, step: step - 1 });
+  const inputFocus = (input) => (e) => {
+    console.log("firring");
+    setStep(1);
+    setFields({ ...fields, currentFocus: input });
+  };
 
-  const handleChange = (name) => (e) => {
+  const handleFieldChange = (name) => (e) => {
     const updatedValue = e.target.value.trim();
-    setValues({ ...values, [name]: updatedValue });
+    setFields({ ...fields, [name]: updatedValue });
 
     let errorMsg = "";
     if (name === "name" && updatedValue === "") {
-      errorMsg = "whats your name?";
+      errorMsg = "what's your name?";
     }
     if (name === "email" && !validateEmail(updatedValue)) {
       errorMsg = "Please enter a valid address";
     }
+
+    if (name === "password" && updatedValue.length < 8) {
+      errorMsg =
+        "Your password needs to be at least 8 characters. Please enter a longer one.";
+    }
+
     setErrors({ ...errors, [name]: errorMsg });
   };
 
-  const handleMonthOrYearChange = (name) => (e) => {
-    let days = 31;
-
-    const updatedValue = e.target.value;
-    days =
-      name === "month"
-        ? getNumberOfDays(parseInt(updatedValue), year)
-        : getNumberOfDays(parseInt(month), updatedValue);
-
-    return setValues({
-      ...values,
-      [name]: updatedValue,
-      numberOfDays: days,
-    });
+  const handleDateChange = (date) => {
+    setFields({ ...fields, date });
   };
 
-  const activeContent = () => {
-    switch (step) {
-      case 1:
-        return (
-          <SignForm
-            values={values}
-            handleChange={handleChange}
-            handleMonthOrYearChange={handleMonthOrYearChange}
-            errors={errors}
-          />
-        );
-      case 2:
-        return <h1>customize twitter</h1>;
-      case 3:
-        return <h1>sign up here</h1>;
-      case 4:
-        return <h1>We sent a code</h1>;
-      case 5:
-        return <h1>You'll need a password</h1>;
-      default:
-        return <h1>This is default case!</h1>;
-    }
-  };
+  const prevStep = () => setStep(step - 1);
+  const nextStep = () => setStep(step + 1);
 
-  const { step, month, year } = values;
+  let modalContent;
+  switch (step) {
+    case 1:
+      modalContent = (
+        <SignForm
+          values={fields}
+          handleFieldChange={handleFieldChange}
+          errors={errors}
+          handleDateChange={handleDateChange}
+          nextStep={nextStep}
+        />
+      );
+      break;
+
+    case 2:
+      modalContent = <Step2 nextStep={nextStep} prevStep={prevStep} />;
+      break;
+
+    case 3:
+      modalContent = (
+        <ConfirmDetails
+          fields={fields}
+          inputFocus={inputFocus}
+          nextStep={nextStep}
+        />
+      );
+      break;
+
+    case 4:
+      modalContent = (
+        <PasswordInput
+          fields={fields}
+          handleFieldChange={handleFieldChange}
+          errors={errors}
+        />
+      );
+      break;
+
+    default:
+      break;
+  }
 
   return (
-    <div>
-      <Backdrop className={classes.backdrop} open={true}>
-        <div className={classes.paper}>
-          <div className={classes.modalHeader}>
-            <div className="">
-              {step > 1 && (
-                <MyButton
-                  variant="contained"
-                  size="small"
-                  color="primary"
-                  onClick={prevStep}
-                >
-                  Back
-                </MyButton>
-              )}
-            </div>
-            <TwitterIcon />
-            <div className="">
-              {step !== 5 && (
-                <MyButton
-                  variant="contained"
-                  size="small"
-                  color="primary"
-                  onClick={nextStep}
-                >
-                  Next
-                </MyButton>
-              )}
-            </div>
-          </div>
-          <div className={classes.modalContent}>
-            <form autoComplete="off" className={classes.root}>
-              {activeContent()}
-            </form>
-          </div>
-        </div>
-      </Backdrop>
+    <div
+      className={classes.root}
+      role="button"
+      // onClick={() => props.history.goBack()}
+    >
+      <div className={classes.modal} onClick={(e) => e.stopPropagation()}>
+        {modalContent}
+      </div>
     </div>
   );
 };
 
-export default Register;
+export default withRouter(SignUpModal);

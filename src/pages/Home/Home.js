@@ -13,7 +13,7 @@ import PeopleIcon from "@material-ui/icons/People";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import { useAuthState } from "../../contexts/auth";
-import { Redirect, useHistory } from "react-router-dom";
+import { Link, Redirect, useHistory, useLocation } from "react-router-dom";
 import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -110,6 +110,7 @@ const Home = () => {
   const classes = useStyles();
   const { authenticated, loading } = useAuthState();
   const history = useHistory();
+  const location = useLocation();
 
   const [loginValues, setLoginValues] = useState({
     username: "",
@@ -193,6 +194,11 @@ const Home = () => {
                 disableElevation
                 fullWidth
                 href="/i/flow/signup"
+                component={Link}
+                to={{
+                  pathname: `/i/flow/signup`,
+                  state: { background: location },
+                }}
               >
                 Sign Up
               </MyButton>

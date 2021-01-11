@@ -48,7 +48,7 @@ const UserExtraInfo = (props) => {
         <div className={classes.extraInfoDiv}>
           <LocationOnOutlinedIcon fontSize="small" color="disabled" />
           <Typography variant="caption" color="textSecondary">
-            Born {moment(new Date(dob)).format("MMMM YYYY")}
+            Born {moment(new Date(parseInt(dob))).format("MMM YYYY")}
           </Typography>
         </div>
       )}

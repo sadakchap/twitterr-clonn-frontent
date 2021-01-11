@@ -1,8 +1,22 @@
 import Base from "../../components/Base/Base";
-import { IconButton, makeStyles, Typography } from "@material-ui/core";
+import {
+  Avatar,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
 import ExploreSection from "../../components/ExploreSection/ExploreSection";
 import ArrowBackOutlinedIcon from "@material-ui/icons/ArrowBackOutlined";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useAuthState } from "../../contexts/auth";
+import Spinner from "../../components/Spinner/Spinner";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import CommentIcon from "@material-ui/icons/Comment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,11 +56,30 @@ const useStyles = makeStyles((theme) => ({
   mainContent: {
     minHeight: "calc(100vh - 68px)",
   },
+  listWrapper: {
+    padding: 0,
+    width: "100%",
+  },
+  listItem: {
+    borderBottom: `1px solid ${theme.palette.grey[700]}`,
+    padding: `${theme.spacing(2)}px`,
+    "& .MuiAvatar-colorDefault": {
+      backgroundColor: `${theme.palette.primary.main}`,
+      color: "#fff",
+    },
+  },
 }));
 
 const NotificationPage = () => {
-  const classes = useStyles();
   const history = useHistory();
+  const {
+    user: {
+      data: { notifications },
+    },
+    loading,
+  } = useAuthState();
+
+  const classes = useStyles();
 
   return (
     <Base>
@@ -63,7 +96,43 @@ const NotificationPage = () => {
             </div>
 
             <div className={classes.mainContent}>
-              Your notifications here...
+              {loading && <Spinner />}
+              {!loading && notifications?.length > 0 && (
+                <List className={classes.listWrapper}>
+                  {notifications.map((not) => (
+                    <Link
+                      to={not.link}
+                      key={not.id}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <ListItem className={classes.listItem} button>
+                        <ListItemAvatar>
+                          <Avatar>
+                            {not.verb === "liked" && <FavoriteIcon />}
+                            {not.verb === "commented" && <CommentIcon />}
+                            {not.verb === "tagged" && "@"}
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            <Typography
+                              color={not.read ? "textSecondary" : "textPrimary"}
+                              variant={not.read ? "body2" : "subtitle2"}
+                            >
+                              {not.message}
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </Link>
+                  ))}
+                </List>
+              )}
+              {!loading && notifications?.length === 0 && (
+                <Typography variant="subtitle2" color="textSecondary">
+                  No notifications here!
+                </Typography>
+              )}
             </div>
           </div>
           <div className={classes.exploreSection}>

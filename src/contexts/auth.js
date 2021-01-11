@@ -25,6 +25,7 @@ if (token) {
         credentials: { token: token },
         data: decodedToken,
       },
+      loading: false,
     };
   }
 } else console.log("No token found");
@@ -136,6 +137,7 @@ const AuthContextProvider = (props) => {
       state.authenticated &&
       Object.prototype.hasOwnProperty.call(state.user.data, "exp")
     ) {
+      dispatch({ type: "SET_LOADING", payload: true });
       getUserData({ variables: { username: state.user.data.username } });
     }
     // eslint-disable-next-line

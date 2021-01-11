@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Badge,
   Button,
   Drawer,
   Hidden,
@@ -47,8 +48,8 @@ const useStyles = makeStyles((theme) => ({
     color: "#fff",
     textDecoration: "none",
     transition: "0.3s ease",
-    "& svg": {
-      marginRight: `${theme.spacing(2)}px`,
+    "& h6": {
+      marginLeft: `${theme.spacing(2)}px`,
     },
     "&:hover": {
       color: `${theme.palette.primary.main}`,
@@ -105,7 +106,13 @@ const SideMenu = (props) => {
           <>
             <ListItem>
               <NavLink to="/notifications" className={classes.navLink}>
-                <NotificationsNoneSharpIcon fontSize="large" />
+                <Badge
+                  color="secondary"
+                  invisible={!authUserData.unreadNotifications}
+                  badgeContent={authUserData.unreadNotifications}
+                >
+                  <NotificationsNoneSharpIcon fontSize="large" />
+                </Badge>
                 <Typography variant="h6">Notification</Typography>
               </NavLink>
             </ListItem>

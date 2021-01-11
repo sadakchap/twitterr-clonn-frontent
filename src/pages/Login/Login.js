@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuthDispatch, useAuthState } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     borderRadius: `${theme.shape.borderRadius}px`,
+  },
+  textLink: {
+    color: theme.palette.primary.main,
   },
 }));
 
@@ -158,6 +161,19 @@ const Login = () => {
               "Login"
             )}
           </Button>
+          <div style={{ textAlign: "center" }}>
+            <Typography variant="caption">
+              <Link
+                className={classes.textLink}
+                to={{
+                  pathname: `/i/flow/signup`,
+                  state: { background: location },
+                }}
+              >
+                Sign up for twitter-clonn
+              </Link>
+            </Typography>
+          </div>
         </form>
       </div>
       <Snackbar

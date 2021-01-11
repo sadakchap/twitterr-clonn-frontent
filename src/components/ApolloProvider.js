@@ -14,7 +14,7 @@ import { getMainDefinition } from "@apollo/client/utilities";
 const httpLink = new createHttpLink({
   uri: process.env.REACT_APP_API_URL,
 });
-console.log(process.env.REACT_APP_WEBSOCKET_LINK);
+
 const wsLink = new WebSocketLink({
   uri: process.env.REACT_APP_WEBSOCKET_LINK,
   options: {

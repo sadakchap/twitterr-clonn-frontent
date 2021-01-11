@@ -16,6 +16,9 @@ import { useAuthState } from "../../contexts/auth";
 import Spinner from "../../components/Spinner/Spinner";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import CommentIcon from "@material-ui/icons/Comment";
+import { useEffect } from "react";
+import { gql, useMutation } from "@apollo/client";
+import { FETCH_CURRENT_USER_QUERY } from "../../utils/graphql";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,15 +73,49 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NotificationPage = () => {
+  const classes = useStyles();
   const history = useHistory();
   const {
     user: {
-      data: { notifications },
+      data: { notifications, unreadNotifications },
     },
     loading,
   } = useAuthState();
 
-  const classes = useStyles();
+  const [markNotificationRead] = useMutation(MARK_READ_MUTATION, {
+    onError: (err) => console.log(err),
+    update: (proxy, res) => {
+      console.log(res.data);
+      if (res.data.markNotificationsRead === "done!") {
+        const data = proxy.readQuery({
+          query: FETCH_CURRENT_USER_QUERY,
+        });
+
+        console.log(data);
+        // proxy.writeQuery({
+        //   query: FETCH_CURRENT_USER_QUERY,
+        //   data: {
+        //     getUser: ,
+        //   },
+        // });
+      }
+    },
+  });
+
+  useEffect(() => {
+    console.log("running useEffect", loading, unreadNotifications);
+    if (!loading && unreadNotifications) {
+      const unreadNotificationIds = notifications
+        .filter((not) => !not.read)
+        .map((not) => not.id);
+      console.log(unreadNotificationIds);
+      markNotificationRead({
+        variables: {
+          notificationsIds: unreadNotificationIds,
+        },
+      });
+    }
+  }, [loading, unreadNotifications, markNotificationRead, notifications]);
 
   return (
     <Base>
@@ -144,3 +181,9 @@ const NotificationPage = () => {
 };
 
 export default NotificationPage;
+
+const MARK_READ_MUTATION = gql`
+  mutation($notificationsIds: [ID!]!) {
+    markNotificationsRead(notificationsIds: $notificationsIds)
+  }
+`;

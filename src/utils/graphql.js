@@ -91,3 +91,46 @@ export const FETCH_USER_QUERY = gql`
     }
   }
 `;
+
+export const FETCH_CURRENT_USER_QUERY = gql`
+  query($username: String!) {
+    getUser(username: $username) {
+      id
+      username
+      name
+      profile_pic
+      unreadNotifications
+      notifications {
+        id
+        link
+        read
+        verb
+        message
+      }
+      dob
+      bio
+      posts {
+        id
+        body
+        username
+        createdAt
+        likesCount
+        commentsCount
+        likes {
+          id
+          username
+        }
+        comments {
+          id
+          body
+          username
+          createdAt
+          name
+        }
+      }
+      website
+      location
+      createdAt
+    }
+  }
+`;

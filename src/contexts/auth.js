@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useReducer } from "react";
 import jwtDecode from "jwt-decode";
-import { gql, useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
+import { FETCH_CURRENT_USER_QUERY } from "../utils/graphql";
 
 let initialState = {
   authenticated: false,
@@ -29,49 +30,6 @@ if (token) {
     };
   }
 } else console.log("No token found");
-
-const GET_USER_QUERY = gql`
-  query($username: String!) {
-    getUser(username: $username) {
-      id
-      username
-      name
-      profile_pic
-      unreadNotifications
-      notifications {
-        id
-        link
-        read
-        verb
-        message
-      }
-      dob
-      bio
-      posts {
-        id
-        body
-        username
-        createdAt
-        likesCount
-        commentsCount
-        likes {
-          id
-          username
-        }
-        comments {
-          id
-          body
-          username
-          createdAt
-          name
-        }
-      }
-      website
-      location
-      createdAt
-    }
-  }
-`;
 
 const AuthStateContext = createContext();
 const AuthDispatchContext = createContext();
@@ -111,6 +69,15 @@ const authReducer = (state, action) => {
         loading: action.payload,
       };
 
+    case "MARK_READ":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          data: { ...state.user.data, unreadNotifications: 0 },
+        },
+      };
+
     default:
       break;
   }
@@ -120,7 +87,7 @@ const authReducer = (state, action) => {
 const AuthContextProvider = (props) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const [getUserData] = useLazyQuery(GET_USER_QUERY, {
+  const [getUserData] = useLazyQuery(FETCH_CURRENT_USER_QUERY, {
     onCompleted: (data) => {
       dispatch({ type: "SET_USER", payload: data.getUser });
       dispatch({ type: "SET_LOADING", payload: false });

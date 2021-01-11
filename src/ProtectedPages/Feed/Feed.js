@@ -51,6 +51,7 @@ const Feed = () => {
   const { data: { getPosts } = {}, loading } = useQuery(FETCH_TWEETS_QUERY);
   const {
     user: { data: authUserData },
+    loading: userLoading,
   } = useAuthState();
 
   return (
@@ -58,22 +59,25 @@ const Feed = () => {
       {(handleDrawerToggle) => (
         <div className={classes.root}>
           <div className={classes.content}>
-            <div className={classes.header}>
-              <Hidden smUp>
-                <Avatar
-                  src={authUserData.profile_pic}
-                  className={classes.headerAvatar}
-                  onClick={handleDrawerToggle}
-                />
-              </Hidden>
-              <Typography
-                variant="h6"
-                component="h6"
-                className={classes.headerTitle}
-              >
-                Home
-              </Typography>
-            </div>
+            {userLoading && <CircularProgress />}
+            {!userLoading && authUserData && (
+              <div className={classes.header}>
+                <Hidden smUp>
+                  <Avatar
+                    src={authUserData.profile_pic}
+                    className={classes.headerAvatar}
+                    onClick={handleDrawerToggle}
+                  />
+                </Hidden>
+                <Typography
+                  variant="h6"
+                  component="h6"
+                  className={classes.headerTitle}
+                >
+                  Home
+                </Typography>
+              </div>
+            )}
             <CreateTweet />
             <div className={classes.latestTweets}>
               {loading ? (

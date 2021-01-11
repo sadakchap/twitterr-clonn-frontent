@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import Routes from "../Routes/Routes";
 import AuthContextProvider from "../../contexts/auth";
 import { BrowserRouter } from "react-router-dom";
+import { MessageProvider } from "../../contexts/messages";
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -38,9 +39,11 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthContextProvider>
-        <BrowserRouter>
-          <Routes />
-        </BrowserRouter>
+        <MessageProvider>
+          <BrowserRouter>
+            <Routes />
+          </BrowserRouter>
+        </MessageProvider>
       </AuthContextProvider>
     </ThemeProvider>
   );

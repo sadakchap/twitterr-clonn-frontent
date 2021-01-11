@@ -76,12 +76,12 @@ const CreateTweet = ({ showAsModal = false }) => {
         mentionedUsers.push(ent.data.mention.username);
       }
     }
-    console.log(mentionedUsers);
 
     if (editorState.getCurrentContent().hasText()) {
       createTweet({
         variables: {
           body: JSON.stringify(rawData),
+          mentionedUsers,
         },
       });
     }
@@ -129,8 +129,8 @@ const CreateTweet = ({ showAsModal = false }) => {
 export default CreateTweet;
 
 const CREATE_TWEET_MUTATION = gql`
-  mutation($body: String!) {
-    createPost(body: $body) {
+  mutation($body: String!, $mentionedUsers: [String!]) {
+    createPost(body: $body, mentionedUsers: $mentionedUsers) {
       id
       body
       username

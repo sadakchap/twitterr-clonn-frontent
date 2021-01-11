@@ -23,6 +23,11 @@ const useStyles = makeStyles((theme) => ({
     },
     "& ul.MuiList-root": {
       padding: 0,
+      overflowY: "auto",
+      height: "calc(100vh - 53px)",
+      "&::-webkit-scrollbar": {
+        display: "none",
+      },
     },
   },
   borderBottom: {

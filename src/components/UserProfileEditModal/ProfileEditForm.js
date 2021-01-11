@@ -93,7 +93,6 @@ const ProfileEditForm = () => {
 
   const [updateUser, { loading }] = useMutation(UPDATE_PROFILE_MUTATION, {
     update: (_, result) => {
-      console.log(result.data.updateUser);
       authDispatch({ type: "UPDATE_USER", payload: result.data.updateUser });
       history.goBack();
     },

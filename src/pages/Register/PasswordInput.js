@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
 
 const PasswordInput = (props) => {
   const classes = useStyles();
-  const { name, email, date, password } = props.fields;
-  const { handleFieldChange, errors } = props;
+  const { password } = props.fields;
+  const { handleFieldChange, errors, handleFormSubmit } = props;
   const [showPassword, setShowPassword] = useState(false);
 
   const revealPassword = (e) => {
@@ -50,6 +50,7 @@ const PasswordInput = (props) => {
           variant="contained"
           className={classes.actionButton}
           disabled={password.trim().length < 8}
+          onClick={handleFormSubmit}
         >
           Next
         </Button>

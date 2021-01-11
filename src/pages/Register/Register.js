@@ -1,4 +1,9 @@
-import { makeStyles } from "@material-ui/core";
+import {
+  CircularProgress,
+  makeStyles,
+  Snackbar,
+  Typography,
+} from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { useState } from "react";
 import SignForm from "./SignForm";
@@ -6,6 +11,8 @@ import { validateEmail } from "../../utils/utils";
 import Step2 from "./Step2";
 import ConfirmDetails from "./ConfirmDetails";
 import PasswordInput from "./PasswordInput";
+import { gql, useMutation } from "@apollo/client";
+import { useAuthDispatch } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,9 +39,14 @@ const useStyles = makeStyles((theme) => ({
       height: "100vh",
     },
   },
+  snackBar: {
+    backgroundColor: theme.palette.secondary.main,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    borderRadius: `${theme.shape.borderRadius}px`,
+  },
 }));
 
-const SignUpModal = (props) => {
+const SignUpModal = () => {
   const classes = useStyles();
   const [step, setStep] = useState(1);
   const [fields, setFields] = useState({
@@ -45,9 +57,11 @@ const SignUpModal = (props) => {
     currentFocus: "name",
   });
   const [errors, setErrors] = useState({});
+  const dispatch = useAuthDispatch();
+
+  const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const inputFocus = (input) => (e) => {
-    console.log("firring");
     setStep(1);
     setFields({ ...fields, currentFocus: input });
   };
@@ -69,11 +83,42 @@ const SignUpModal = (props) => {
         "Your password needs to be at least 8 characters. Please enter a longer one.";
     }
 
-    setErrors({ ...errors, [name]: errorMsg });
+    setErrors({ ...errors, [name]: errorMsg, errorMsg });
   };
 
   const handleDateChange = (date) => {
     setFields({ ...fields, date });
+  };
+
+  const [registerUser, { loading }] = useMutation(REGISTER_USER_MUTATION, {
+    onCompleted: (data) => {
+      dispatch({
+        type: "LOGIN",
+        payload: { token: data.register.token },
+      });
+
+      dispatch({ type: "SET_LOADING", payload: false });
+      window.location.href = "/home";
+    },
+    onError: (err) => {
+      dispatch({ type: "SET_LOADING", payload: false });
+      setStep(1);
+      setErrors({
+        ...err.graphQLErrors[0].extensions.exception.errors,
+        errorMsg: err.graphQLErrors[0].message,
+      });
+      setOpenSnackBar(true);
+    },
+  });
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    registerUser({
+      variables: {
+        ...fields,
+        dob: new Date(fields.date).toISOString(),
+      },
+    });
   };
 
   const prevStep = () => setStep(step - 1);
@@ -113,6 +158,7 @@ const SignUpModal = (props) => {
           fields={fields}
           handleFieldChange={handleFieldChange}
           errors={errors}
+          handleFormSubmit={handleFormSubmit}
         />
       );
       break;
@@ -128,10 +174,44 @@ const SignUpModal = (props) => {
       // onClick={() => props.history.goBack()}
     >
       <div className={classes.modal} onClick={(e) => e.stopPropagation()}>
-        {modalContent}
+        {!loading && modalContent}
+        {loading && <CircularProgress />}
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          open={openSnackBar}
+          onClose={() => setOpenSnackBar(false)}
+          autoHideDuration={2000}
+        >
+          <Typography
+            variant="caption"
+            component="div"
+            className={classes.snackBar}
+          >
+            {errors.errorMsg}
+          </Typography>
+        </Snackbar>
       </div>
     </div>
   );
 };
 
 export default withRouter(SignUpModal);
+
+const REGISTER_USER_MUTATION = gql`
+  mutation($name: String!, $email: String!, $password: String!, $dob: String!) {
+    register(
+      registerInput: {
+        name: $name
+        email: $email
+        password: $password
+        dob: $dob
+      }
+    ) {
+      id
+      username
+      name
+      token
+      unreadNotifications
+    }
+  }
+`;

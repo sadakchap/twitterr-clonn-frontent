@@ -13,7 +13,8 @@ import PeopleIcon from "@material-ui/icons/People";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import { useAuthState } from "../../contexts/auth";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
+import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -108,6 +109,23 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
   const classes = useStyles();
   const { authenticated, loading } = useAuthState();
+  const history = useHistory();
+
+  const [loginValues, setLoginValues] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleChange = (name) => (e) =>
+    setLoginValues({ ...loginValues, [name]: e.target.value });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    history.push("/login", { ...loginValues, fromHome: true });
+  };
+
+  const { username, password } = loginValues;
+
   return !loading && authenticated ? (
     <Redirect to="/home" />
   ) : (
@@ -127,15 +145,22 @@ const Home = () => {
         >
           <Hidden smDown>
             <Grid item className={classes.quickLoginFormWrapper}>
-              <form noValidate autoComplete="off" className={classes.loginForm}>
+              <form
+                noValidate
+                autoComplete="off"
+                className={classes.loginForm}
+                onSubmit={handleSubmit}
+              >
                 <TextField
                   id="filled-username"
-                  label="Phone, email or username"
+                  label="Email or username"
                   type="text"
                   InputLabelProps={{
                     shrink: true,
                   }}
                   variant="filled"
+                  value={username}
+                  onChange={handleChange("username")}
                 />
                 <TextField
                   id="filled-password"
@@ -145,8 +170,10 @@ const Home = () => {
                     shrink: true,
                   }}
                   variant="filled"
+                  value={password}
+                  onChange={handleChange("password")}
                 />
-                <MyButton variant="outlined" color="primary">
+                <MyButton variant="outlined" color="primary" type="submit">
                   Log in
                 </MyButton>
               </form>

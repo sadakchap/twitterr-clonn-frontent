@@ -9,7 +9,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import TwitterIcon from "@material-ui/icons/Twitter";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useAuthDispatch, useAuthState } from "../../contexts/auth";
 
 const useStyles = makeStyles((theme) => ({
@@ -49,21 +50,22 @@ const useStyles = makeStyles((theme) => ({
 const Login = () => {
   const classes = useStyles();
   const dispatch = useAuthDispatch();
-  const { loading } = useAuthState();
+  const { loading: loadingFromCache } = useAuthState();
+  const location = useLocation();
 
   const [values, setValues] = useState({
-    username: "",
-    password: "",
+    username: location.state?.username || "",
+    password: location.state?.password || "",
     error: "",
   });
+
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const handleChange = (name) => (e) =>
     setValues({ ...values, [name]: e.target.value });
 
-  const [loginUser] = useLazyQuery(LOGIN_USER_QUERY, {
+  const [loginUser, { loading }] = useLazyQuery(LOGIN_USER_QUERY, {
     onCompleted: (data) => {
-      console.log("ok??");
       dispatch({
         type: "LOGIN",
         payload: { token: data.login.token },
@@ -76,6 +78,7 @@ const Login = () => {
       dispatch({ type: "SET_LOADING", payload: false });
       setValues({
         ...values,
+        password: "",
         error:
           "The email and password you entered did not match our records. Please double-check and try again.",
       });
@@ -93,6 +96,13 @@ const Login = () => {
     dispatch({ type: "SET_LOADING", payload: true });
     loginUser({ variables: values });
   };
+
+  useEffect(() => {
+    if (location.state?.fromHome) {
+      loginUser({ variables: values });
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const { username, password, error } = values;
 
@@ -142,7 +152,7 @@ const Login = () => {
             className={classes.formBtn}
             disabled={!username || !password}
           >
-            {loading ? (
+            {loadingFromCache || loading ? (
               <CircularProgress style={{ color: "#fff" }} size={25} />
             ) : (
               "Login"

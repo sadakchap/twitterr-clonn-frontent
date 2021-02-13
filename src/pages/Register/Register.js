@@ -148,6 +148,7 @@ const SignUpModal = () => {
           fields={fields}
           inputFocus={inputFocus}
           nextStep={nextStep}
+          prevStep={prevStep}
         />
       );
       break;

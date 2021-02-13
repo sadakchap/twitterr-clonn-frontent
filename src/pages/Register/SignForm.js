@@ -146,6 +146,30 @@ const SignForm = (props) => {
               />
             </MuiPickersUtilsProvider>
           </div>
+          <p
+            style={{
+              color: "#aeb2b6",
+              textAlign: "left",
+              fontSize: "0.9rem",
+              marginTop: "2em",
+              lineHeight: "0.9rem",
+              letterSpacing: "0.5px",
+            }}
+          >
+            <small>
+              <strong>Note:</strong> Please use a dummy email address, if you
+              don't have one, you can get using{" "}
+              <a
+                style={{ color: "#1da1f2" }}
+                href="https://temp-mail.org/en/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                tempmail.org
+              </a>
+            </small>
+            .
+          </p>
         </div>
       </div>
     </>
